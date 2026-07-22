@@ -390,6 +390,21 @@ h1, h2, h3, .marca {
   opacity: 1;
 }
 
+.logos-envio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.logos-envio img {
+  height: 22px;
+  width: auto;
+  object-fit: contain;
+}
+
 /* --- Filtros de categoría --- */
 .filtros-categoria {
   display: flex;
