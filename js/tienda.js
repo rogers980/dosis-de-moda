@@ -18,6 +18,9 @@ const NOMBRES_CATEGORIA = {
   satchel: "Satchel",
   bandolera: "Bandolera",
   clutch: "Clutch",
+  tote: "Tote",
+  bucket: "Bucket",
+  mini: "Mini",
 };
 
 let categoriaActiva = "todas";

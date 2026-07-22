@@ -11,4 +11,10 @@ const productos = [
   { id: 10, nombre: "Satchel Cuero Cognac", precio: 38.00, img: "img/reales/cartera-real-6.jpg", categoria: "satchel" },
   { id: 11, nombre: "Clutch Negra Cadena Dorada", precio: 29.99, img: "img/reales/cartera-real-7.jpg", categoria: "clutch" },
   { id: 12, nombre: "Clutch Negra Elegante", precio: 27.50, img: "img/reales/cartera-real-8.jpg", categoria: "clutch" },
+  { id: 13, nombre: "Tote Turquesa Aventura", precio: 26.99, img: "img/cartera13.svg", categoria: "tote" },
+  { id: 14, nombre: "Clutch Atardecer Dorado", precio: 22.99, img: "img/cartera14.svg", categoria: "clutch" },
+  { id: 15, nombre: "Bucket Bag Violeta Noche", precio: 30.50, img: "img/cartera15.svg", categoria: "bucket" },
+  { id: 16, nombre: "Mini Bolso Cadena Fuego", precio: 25.99, img: "img/cartera16.svg", categoria: "mini" },
+  { id: 17, nombre: "Tote Canvas Café", precio: 21.99, img: "img/reales/cartera-real-9.jpg", categoria: "tote" },
+  { id: 18, nombre: "Clutch Azul Cielo", precio: 33.00, img: "img/reales/cartera-real-11.jpg", categoria: "clutch" },
 ];
