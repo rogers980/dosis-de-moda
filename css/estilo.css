@@ -19,6 +19,8 @@ body {
   font-family: "Quicksand", sans-serif;
   background: var(--fondo);
   color: var(--gris-texto);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, .marca {
@@ -31,8 +33,11 @@ h1, h2, h3, .marca {
   align-items: center;
   justify-content: space-between;
   padding: 18px 32px;
-  background: #fff;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 4px 24px rgba(123,47,247,0.08);
+  border-bottom: 1px solid rgba(255,77,141,0.08);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -316,6 +321,7 @@ h1, h2, h3, .marca {
 }
 
 .btn-cta {
+  position: relative;
   display: inline-block;
   background: #fff;
   color: var(--morado);
@@ -323,11 +329,31 @@ h1, h2, h3, .marca {
   padding: 14px 32px;
   border-radius: 999px;
   text-decoration: none;
-  transition: transform 0.2s;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 0 0 rgba(255,255,255,0);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.btn-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(123,47,247,0.28), transparent);
+  transform: skewX(-20deg);
+  animation: brilloBoton 3.2s ease-in-out infinite;
+}
+
+@keyframes brilloBoton {
+  0% { left: -75%; }
+  35%, 100% { left: 130%; }
 }
 
 .btn-cta:hover {
   transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.22);
 }
 
 /* --- Franja de beneficios --- */
@@ -435,11 +461,12 @@ h1, h2, h3, .marca {
   background: linear-gradient(135deg, var(--rosa), var(--morado));
   color: #fff;
   border-color: transparent;
+  box-shadow: 0 6px 18px rgba(255,77,141,0.4);
 }
 
 /* --- Testimonios --- */
 .testimonios {
-  padding: 56px 32px 24px;
+  padding: 80px 32px 32px;
   max-width: 1100px;
   margin: 0 auto;
   text-align: center;
@@ -575,55 +602,102 @@ h1, h2, h3, .marca {
 
 /* --- Catálogo --- */
 .catalogo {
-  padding: 64px 32px;
+  padding: 88px 32px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .catalogo h2, .nosotros h2, .contacto h2 {
   text-align: center;
-  font-size: 2rem;
+  font-size: 2.1rem;
   color: var(--oscuro);
-  margin-bottom: 40px;
+  margin-bottom: 48px;
+  letter-spacing: 0.3px;
+}
+
+.catalogo h2::after, .nosotros h2::after, .contacto h2::after, .testimonios h2::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 4px;
+  margin: 16px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--rosa), var(--morado), var(--naranja));
 }
 
 .grid-productos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 26px;
 }
 
 .tarjeta-producto {
   background: #fff;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 6px 20px rgba(123,47,247,0.12);
+  box-shadow: 0 8px 24px rgba(123,47,247,0.1), 0 2px 8px rgba(0,0,0,0.04);
   text-align: center;
-  padding-bottom: 14px;
-  transition: transform 0.2s;
+  padding-bottom: 20px;
+  border: 1px solid rgba(123,47,247,0.06);
+  transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .tarjeta-producto:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px);
+  box-shadow: 0 22px 44px rgba(123,47,247,0.22), 0 6px 16px rgba(0,0,0,0.06);
+  border-color: rgba(255,77,141,0.25);
 }
 
-.tarjeta-producto img {
+.tarjeta-imagen {
+  position: relative;
+  overflow: hidden;
+}
+
+.tarjeta-imagen img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1);
+}
+
+.tarjeta-producto:hover .tarjeta-imagen img {
+  transform: scale(1.09);
+}
+
+.insignia-nuevo {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  background: linear-gradient(135deg, var(--dorado), var(--naranja));
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(255,138,92,0.45);
 }
 
 .tarjeta-producto h3 {
-  margin: 12px 10px 2px;
-  font-size: 0.92rem;
+  margin: 18px 14px 6px;
+  font-size: 0.96rem;
+  font-weight: 700;
   color: var(--oscuro);
+  line-height: 1.35;
 }
 
 .precio {
-  font-weight: 700;
-  font-size: 0.9rem;
+  display: inline-block;
+  font-weight: 800;
+  font-size: 0.92rem;
   color: var(--rosa);
-  margin-bottom: 10px;
+  background: linear-gradient(135deg, rgba(255,77,141,0.1), rgba(123,47,247,0.1));
+  padding: 3px 14px;
+  border-radius: 999px;
+  margin-bottom: 14px;
 }
 
 .btn-agregar {
@@ -632,14 +706,21 @@ h1, h2, h3, .marca {
   color: #fff;
   font-weight: 700;
   font-size: 0.82rem;
-  padding: 8px 16px;
+  padding: 9px 20px;
   border-radius: 999px;
   cursor: pointer;
+  box-shadow: 0 6px 16px rgba(123,47,247,0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-agregar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(123,47,247,0.35);
 }
 
 /* --- Nosotros / Contacto --- */
 .nosotros, .contacto {
-  padding: 56px 32px;
+  padding: 72px 32px;
   max-width: 800px;
   margin: 0 auto;
   text-align: center;

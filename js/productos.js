@@ -17,4 +17,12 @@ const productos = [
   { id: 16, nombre: "Mini Bolso Cadena Fuego", precio: 25.99, img: "img/cartera16.svg", categoria: "mini" },
   { id: 17, nombre: "Tote Canvas Café", precio: 21.99, img: "img/reales/cartera-real-9.jpg", categoria: "tote" },
   { id: 18, nombre: "Clutch Azul Cielo", precio: 33.00, img: "img/reales/cartera-real-11.jpg", categoria: "clutch" },
+  { id: 19, nombre: "Satchel Esmeralda Urbana", precio: 34.99, img: "img/cartera19.svg", categoria: "satchel", nuevo: true },
+  { id: 20, nombre: "Bandolera Coral Atardecer", precio: 26.50, img: "img/cartera20.svg", categoria: "bandolera", nuevo: true },
+  { id: 21, nombre: "Bucket Bag Índigo Profundo", precio: 31.99, img: "img/cartera21.svg", categoria: "bucket", nuevo: true },
+  { id: 22, nombre: "Mini Bolso Verde Menta", precio: 23.99, img: "img/cartera22.svg", categoria: "mini", nuevo: true },
+  { id: 23, nombre: "Bandolera Vino Crossbody", precio: 28.50, img: "img/reales/cartera-real-12.jpg", categoria: "bandolera", nuevo: true },
+  { id: 24, nombre: "Satchel Estructurada Clásica", precio: 36.99, img: "img/reales/cartera-real-13.jpg", categoria: "satchel", nuevo: true },
+  { id: 25, nombre: "Cartera Terracota Minimal", precio: 27.99, img: "img/reales/cartera-real-14.jpg", categoria: "hombro", nuevo: true },
+  { id: 26, nombre: "Mini Clutch Colección Pastel", precio: 24.50, img: "img/reales/cartera-real-15.jpg", categoria: "mini", nuevo: true },
 ];

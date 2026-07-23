@@ -60,7 +60,10 @@ function renderizarProductos() {
     const tarjeta = document.createElement("div");
     tarjeta.className = "tarjeta-producto revelar";
     tarjeta.innerHTML = `
-      <img src="${producto.img}" alt="${producto.nombre}">
+      <div class="tarjeta-imagen">
+        ${producto.nuevo ? '<span class="insignia-nuevo">Nuevo</span>' : ""}
+        <img src="${producto.img}" alt="${producto.nombre}">
+      </div>
       <h3>${producto.nombre}</h3>
       <p class="precio">${formatearPrecio(producto.precio)}</p>
       <button class="btn-agregar" data-id="${producto.id}">Agregar al carrito</button>
