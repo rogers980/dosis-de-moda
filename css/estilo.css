@@ -406,9 +406,10 @@ h1, h2, h3, .marca {
 }
 
 .beneficio p {
-  font-size: 0.92rem;
-  color: #6b6478;
-  line-height: 1.5;
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: #453f56;
+  line-height: 1.6;
 }
 
 .beneficio p strong {
@@ -486,9 +487,10 @@ h1, h2, h3, .marca {
 }
 
 .testimonios-subtitulo {
-  color: #6b6478;
+  color: #453f56;
+  font-weight: 500;
   margin-bottom: 8px;
-  font-size: 1rem;
+  font-size: 1.05rem;
   letter-spacing: 0.3px;
 }
 
@@ -986,12 +988,117 @@ h1, h2, h3, .marca {
   transform: translateX(-50%) translateY(0);
 }
 
+/* --- Banner promocional --- */
+.banner-promo {
+  position: relative;
+  height: 46vh;
+  min-height: 340px;
+  max-height: 480px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.banner-promo-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 60%;
+  transform: scale(1.02);
+}
+
+.banner-promo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(43,16,85,0.35) 0%, rgba(43,16,85,0.55) 55%, rgba(43,16,85,0.85) 100%);
+}
+
+.banner-promo-overlay {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.banner-promo-etiqueta {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 6px 18px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+  backdrop-filter: blur(4px);
+}
+
+.banner-promo-overlay h2 {
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  margin-bottom: 12px;
+  text-shadow: 0 4px 24px rgba(0,0,0,0.35);
+}
+
+.banner-promo-overlay p {
+  font-size: 1.05rem;
+  font-weight: 500;
+  opacity: 0.92;
+  margin-bottom: 26px;
+  max-width: 480px;
+}
+
+.banner-promo .btn-cta {
+  background: #fff;
+  color: var(--morado);
+  border: none;
+  padding: 14px 34px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.banner-promo .btn-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 640px) {
+  .banner-promo {
+    height: 56vh;
+  }
+}
+
 /* --- Nosotros / Contacto --- */
 .nosotros, .contacto {
   padding: 72px 32px;
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
+}
+
+.nosotros p, .contacto > p {
+  font-size: 1.08rem;
+  font-weight: 500;
+  color: #453f56;
+  line-height: 1.75;
+  letter-spacing: 0.1px;
+  max-width: 620px;
+  margin: 0 auto;
 }
 
 .nota-numero {
