@@ -25,4 +25,12 @@ const productos = [
   { id: 24, nombre: "Satchel Estructurada Clásica", precio: 36.99, img: "img/reales/cartera-real-13.jpg", categoria: "satchel", nuevo: true },
   { id: 25, nombre: "Cartera Terracota Minimal", precio: 27.99, img: "img/reales/cartera-real-14.jpg", categoria: "hombro", nuevo: true },
   { id: 26, nombre: "Mini Clutch Colección Pastel", precio: 24.50, img: "img/reales/cartera-real-15.jpg", categoria: "mini", nuevo: true },
+  { id: 27, nombre: "Cartera Fucsia Tropical", precio: 29.50, img: "img/cartera23.svg", categoria: "hombro", nuevo: true },
+  { id: 28, nombre: "Satchel Cielo Elegante", precio: 33.99, img: "img/cartera24.svg", categoria: "satchel", nuevo: true },
+  { id: 29, nombre: "Bandolera Menta Urbana", precio: 27.99, img: "img/cartera25.svg", categoria: "bandolera", nuevo: true },
+  { id: 30, nombre: "Bucket Bag Ámbar Otoño", precio: 30.99, img: "img/cartera26.svg", categoria: "bucket", nuevo: true },
+  { id: 31, nombre: "Mini Bolso Lavanda Dulce", precio: 22.99, img: "img/cartera27.svg", categoria: "mini", nuevo: true },
+  { id: 32, nombre: "Clutch Rubí Noche", precio: 28.99, img: "img/cartera28.svg", categoria: "clutch", nuevo: true },
+  { id: 33, nombre: "Tote Oliva Casual", precio: 24.50, img: "img/cartera29.svg", categoria: "tote", nuevo: true },
+  { id: 34, nombre: "Cartera Cobre Vintage", precio: 31.50, img: "img/cartera30.svg", categoria: "hombro", nuevo: true },
 ];
