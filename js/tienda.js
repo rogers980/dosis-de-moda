@@ -4,6 +4,23 @@ const NUMERO_WHATSAPP = "584127661131";
 // --- Estado del carrito, guardado en localStorage para que no se pierda al recargar la página ---
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
+// --- Favoritos, guardados en localStorage ---
+let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+
+function guardarFavoritos() {
+  localStorage.setItem("favoritos", JSON.stringify(favoritos));
+}
+
+function alternarFavorito(id) {
+  const indice = favoritos.indexOf(id);
+  if (indice === -1) {
+    favoritos.push(id);
+  } else {
+    favoritos.splice(indice, 1);
+  }
+  guardarFavoritos();
+}
+
 function guardarCarrito() {
   localStorage.setItem("carrito", JSON.stringify(carrito));
 }
@@ -23,6 +40,17 @@ const NOMBRES_CATEGORIA = {
   mini: "Mini",
 };
 
+const ICONOS_CATEGORIA = {
+  todas: "✨",
+  hombro: "👜",
+  satchel: "💼",
+  bandolera: "🎒",
+  clutch: "👝",
+  tote: "🛍️",
+  bucket: "🪣",
+  mini: "👛",
+};
+
 let categoriaActiva = "todas";
 
 function renderizarFiltros() {
@@ -32,8 +60,9 @@ function renderizarFiltros() {
   contenedor.innerHTML = categorias
     .map((cat) => {
       const etiqueta = cat === "todas" ? "Todas" : NOMBRES_CATEGORIA[cat] || cat;
+      const icono = ICONOS_CATEGORIA[cat] || "";
       const activo = cat === categoriaActiva ? "activo" : "";
-      return `<button class="chip-categoria ${activo}" data-categoria="${cat}">${etiqueta}</button>`;
+      return `<button class="chip-categoria ${activo}" data-categoria="${cat}"><span class="chip-icono">${icono}</span>${etiqueta}</button>`;
     })
     .join("");
 
@@ -59,9 +88,12 @@ function renderizarProductos() {
   productosFiltrados.forEach((producto) => {
     const tarjeta = document.createElement("div");
     tarjeta.className = "tarjeta-producto revelar";
+    const esFavorito = favoritos.includes(producto.id);
     tarjeta.innerHTML = `
       <div class="tarjeta-imagen" data-id="${producto.id}">
         ${producto.nuevo ? '<span class="insignia-nuevo">Nuevo</span>' : ""}
+        <button class="btn-favorito ${esFavorito ? "activo" : ""}" data-id="${producto.id}" aria-label="Marcar como favorito">${esFavorito ? "❤️" : "🤍"}</button>
+        <span class="tarjeta-brillo"></span>
         <img src="${producto.img}" alt="${producto.nombre}">
       </div>
       <h3 data-id="${producto.id}">${producto.nombre}</h3>
@@ -73,11 +105,27 @@ function renderizarProductos() {
   });
 
   document.querySelectorAll(".btn-agregar").forEach((boton) => {
-    boton.addEventListener("click", () => {
+    boton.addEventListener("click", (e) => {
       const id = Number(boton.dataset.id);
       agregarAlCarrito(id);
       animarBotonAgregado(boton);
       animarIconoCarrito();
+      lanzarConfeti(e.clientX, e.clientY);
+      mostrarToast("¡Agregado a tu bolsa! 🎉");
+    });
+  });
+
+  document.querySelectorAll(".btn-favorito").forEach((boton) => {
+    boton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = Number(boton.dataset.id);
+      alternarFavorito(id);
+      const activo = boton.classList.toggle("activo");
+      boton.textContent = activo ? "❤️" : "🤍";
+      if (activo) {
+        boton.classList.add("latido");
+        setTimeout(() => boton.classList.remove("latido"), 400);
+      }
     });
   });
 
@@ -177,6 +225,41 @@ function animarIconoCarrito() {
   const btnCarrito = document.getElementById("btn-carrito");
   btnCarrito.classList.add("rebote-carrito");
   setTimeout(() => btnCarrito.classList.remove("rebote-carrito"), 500);
+}
+
+// --- Confeti al agregar al carrito ---
+const COLORES_CONFETI = ["#ff4d8d", "#7b2ff7", "#ffbe0b", "#00c9a7", "#ff8a5c"];
+
+function lanzarConfeti(x, y) {
+  const contenedor = document.getElementById("capa-confeti");
+  if (!contenedor) return;
+
+  for (let i = 0; i < 14; i++) {
+    const particula = document.createElement("span");
+    particula.className = "particula-confeti";
+    const angulo = Math.random() * 360;
+    const distancia = 60 + Math.random() * 60;
+    const dx = Math.cos((angulo * Math.PI) / 180) * distancia;
+    const dy = Math.sin((angulo * Math.PI) / 180) * distancia;
+    particula.style.left = x + "px";
+    particula.style.top = y + "px";
+    particula.style.background = COLORES_CONFETI[i % COLORES_CONFETI.length];
+    particula.style.setProperty("--dx", dx + "px");
+    particula.style.setProperty("--dy", dy + "px");
+    contenedor.appendChild(particula);
+    setTimeout(() => particula.remove(), 900);
+  }
+}
+
+// --- Toast de confirmación ---
+let toastTimeout;
+function mostrarToast(mensaje) {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+  toast.textContent = mensaje;
+  toast.classList.add("visible");
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => toast.classList.remove("visible"), 2200);
 }
 
 // --- Lógica del carrito ---

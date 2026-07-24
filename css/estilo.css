@@ -450,7 +450,14 @@ h1, h2, h3, .marca {
   cursor: pointer;
   font-family: inherit;
   font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: background 0.2s, color 0.2s;
+}
+
+.chip-icono {
+  font-size: 1rem;
 }
 
 .chip-categoria:hover {
@@ -588,11 +595,10 @@ h1, h2, h3, .marca {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   letter-spacing: 0.4px;
-  color: var(--turquesa);
-  opacity: 0.9;
-  font-weight: 600;
+  color: #00806b;
+  font-weight: 700;
 }
 
 .testimonio-sello::before {
@@ -651,6 +657,7 @@ h1, h2, h3, .marca {
 .tarjeta-imagen {
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .tarjeta-imagen img {
@@ -658,11 +665,58 @@ h1, h2, h3, .marca {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1);
+  transition: transform 0.6s cubic-bezier(0.2,0.8,0.2,1);
 }
 
 .tarjeta-producto:hover .tarjeta-imagen img {
-  transform: scale(1.09);
+  transform: scale(1.12);
+}
+
+.tarjeta-brillo {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.55) 50%, transparent 60%);
+  transform: translateX(-120%);
+  transition: transform 0.9s ease;
+}
+
+.tarjeta-producto:hover .tarjeta-brillo {
+  transform: translateX(120%);
+}
+
+.btn-favorito {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  border: none;
+  background: rgba(255,255,255,0.85);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 1.05rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease;
+}
+
+.btn-favorito:hover {
+  transform: scale(1.12);
+}
+
+.btn-favorito.latido {
+  animation: latido-favorito 0.4s ease;
+}
+
+@keyframes latido-favorito {
+  0%, 100% { transform: scale(1); }
+  35% { transform: scale(1.4); }
+  60% { transform: scale(0.95); }
 }
 
 .insignia-nuevo {
@@ -880,6 +934,58 @@ h1, h2, h3, .marca {
   }
 }
 
+/* --- Confeti al agregar al carrito --- */
+.capa-confeti {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.particula-confeti {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  opacity: 1;
+  animation: volar-confeti 0.9s ease-out forwards;
+}
+
+@keyframes volar-confeti {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) rotate(340deg);
+    opacity: 0;
+  }
+}
+
+/* --- Toast de confirmación --- */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--oscuro);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding: 14px 26px;
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  z-index: 210;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* --- Nosotros / Contacto --- */
 .nosotros, .contacto {
   padding: 72px 32px;
@@ -999,7 +1105,8 @@ h1, h2, h3, .marca {
 .creador-etiqueta {
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #8a8494;
+  color: #6b6478;
+  font-weight: 600;
 }
 
 .btn-whatsapp-chico {
