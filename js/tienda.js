@@ -375,6 +375,89 @@ function finalizarCompra() {
   window.open(url, "_blank");
 }
 
+// --- Contenido del modal de información (pie de página) ---
+const INFO_CONTENIDO = {
+  "preguntas": {
+    titulo: "Preguntas frecuentes",
+    cuerpo: `
+      <h5>¿Cómo compro?</h5>
+      <p>Elige tu cartera en el catálogo, agrégala al carrito y finaliza tu compra por WhatsApp — ahí te confirmamos el pago y el envío.</p>
+      <h5>¿Hacen envíos a todo el país?</h5>
+      <p>Sí, enviamos a toda Venezuela por Zoom, Tealca o MRW.</p>
+      <h5>¿Puedo pagar en dólares?</h5>
+      <p>Sí, aceptamos Zelle y Binance/USDT, además de pago móvil y transferencia bancaria.</p>
+    `,
+  },
+  "como-comprar": {
+    titulo: "Cómo comprar",
+    cuerpo: `
+      <p><strong>1.</strong> Elige tu cartera en el catálogo y agrégala al carrito.</p>
+      <p><strong>2.</strong> Revisa tu carrito y presiona "Finalizar compra por WhatsApp".</p>
+      <p><strong>3.</strong> Te confirmamos el pedido, el método de pago y coordinamos el envío por courier.</p>
+    `,
+  },
+  "pagos": {
+    titulo: "Métodos de pago",
+    cuerpo: `
+      <p>Aceptamos los siguientes métodos de pago:</p>
+      <p>• Pago móvil<br>• Transferencia bancaria<br>• Zelle<br>• Binance / USDT</p>
+      <p>Te confirmamos los datos de pago por WhatsApp al momento de hacer tu pedido.</p>
+    `,
+  },
+  "envios": {
+    titulo: "Envíos",
+    cuerpo: `
+      <p>Enviamos a toda Venezuela con Zoom, Tealca o MRW — eliges el que te quede más cómodo.</p>
+      <p>Una vez confirmado tu pago, preparamos el pedido y te pasamos el número de guía, normalmente en 24-48 horas.</p>
+    `,
+  },
+  "cambios": {
+    titulo: "Cambios y devoluciones",
+    cuerpo: `
+      <p>Solo aceptamos cambios por defecto de fábrica. Si tu cartera llega dañada o con una falla, contáctanos dentro de las 48 horas siguientes a la entrega y la cambiamos sin costo.</p>
+      <p>No se aceptan cambios por gusto, ya que cada pieza se despacha bajo pedido.</p>
+    `,
+  },
+  "terminos": {
+    titulo: "Términos de uso",
+    cuerpo: `
+      <p>D&M Dosis de Moda es un negocio independiente. Al comprar en esta página aceptas que los precios están en dólares (USD), que el pago se confirma antes del envío, y que la disponibilidad de cada cartera puede cambiar según el inventario real.</p>
+      <p>Este texto es una guía general — si tienes dudas sobre un pedido puntual, escríbenos por WhatsApp.</p>
+    `,
+  },
+  "privacidad": {
+    titulo: "Política de privacidad",
+    cuerpo: `
+      <p>Tus datos (nombre, teléfono, dirección de envío) solo se usan para procesar tu pedido y coordinar el envío — no se comparten con terceros ni se usan para otro fin.</p>
+      <p>La comunicación se maneja directamente por WhatsApp con Roger Soto, dueño de D&M Dosis de Moda.</p>
+    `,
+  },
+};
+
+function abrirInfo(clave) {
+  const info = INFO_CONTENIDO[clave];
+  if (!info) return;
+  document.getElementById("info-titulo").textContent = info.titulo;
+  document.getElementById("info-cuerpo").innerHTML = info.cuerpo;
+  document.getElementById("overlay-info").classList.add("visible");
+  document.getElementById("modal-info").classList.add("abierto");
+}
+
+function cerrarInfo() {
+  document.getElementById("overlay-info").classList.remove("visible");
+  document.getElementById("modal-info").classList.remove("abierto");
+}
+
+document.querySelectorAll("[data-info]").forEach((enlace) => {
+  enlace.addEventListener("click", (e) => {
+    e.preventDefault();
+    abrirInfo(enlace.dataset.info);
+  });
+});
+
+document.getElementById("btn-cerrar-info").addEventListener("click", cerrarInfo);
+document.getElementById("overlay-info").addEventListener("click", cerrarInfo);
+
 // --- Conectar los botones fijos de la página ---
 document.getElementById("btn-carrito").addEventListener("click", abrirCarrito);
 document.getElementById("btn-cerrar-carrito").addEventListener("click", cerrarCarrito);
@@ -390,8 +473,11 @@ document.getElementById("detalle-img").addEventListener("click", (e) => {
 document.getElementById("detalle-flecha-izq").addEventListener("click", () => moverDetalle(-1));
 document.getElementById("detalle-flecha-der").addEventListener("click", () => moverDetalle(1));
 document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    cerrarDetalleProducto();
+    cerrarInfo();
+  }
   if (!document.getElementById("modal-detalle").classList.contains("abierto")) return;
-  if (e.key === "Escape") cerrarDetalleProducto();
   if (e.key === "ArrowLeft") moverDetalle(-1);
   if (e.key === "ArrowRight") moverDetalle(1);
 });
@@ -404,6 +490,7 @@ function configurarEnlacesWhatsapp() {
   const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`;
   document.getElementById("link-whatsapp-flotante").href = url;
   document.getElementById("link-whatsapp-contacto").href = url;
+  document.getElementById("link-whatsapp-pie").href = url;
 
   const mensajeCreador = encodeURIComponent("¡Hola Roger! Vi tu tienda D&M Dosis de Moda y quiero una página como esa.");
   document.getElementById("link-whatsapp-creador").href = `https://wa.me/${NUMERO_WHATSAPP_CREADOR}?text=${mensajeCreador}`;
