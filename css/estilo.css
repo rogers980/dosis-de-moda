@@ -718,6 +718,168 @@ h1, h2, h3, .marca {
   box-shadow: 0 10px 22px rgba(123,47,247,0.35);
 }
 
+/* --- Modal de detalle / inspección de producto --- */
+.modal-detalle {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 24px));
+  width: 720px;
+  max-width: 92vw;
+  max-height: 86vh;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.28);
+  z-index: 110;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal-detalle.abierto {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+}
+
+.modal-detalle-imagen {
+  position: relative;
+  background: #f8f3f9;
+}
+
+.modal-detalle-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  cursor: zoom-in;
+  transition: transform 0.4s ease;
+}
+
+.modal-detalle-imagen img.zoom {
+  transform: scale(1.6);
+  cursor: zoom-out;
+}
+
+.detalle-flecha {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  border: none;
+  background: rgba(255,255,255,0.85);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--oscuro);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.detalle-flecha:hover {
+  transform: translateY(-50%) scale(1.08);
+}
+
+.detalle-flecha-izq { left: 12px; }
+.detalle-flecha-der { right: 12px; }
+
+.detalle-flecha[hidden] { display: none; }
+
+.detalle-puntos {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: 6px;
+}
+
+.detalle-punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.6);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.detalle-punto.activo {
+  background: #fff;
+  transform: scale(1.25);
+}
+
+.modal-detalle-info {
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
+.modal-detalle-categoria {
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: var(--morado);
+  background: rgba(123,47,247,0.1);
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+
+.modal-detalle-info h3 {
+  font-size: 1.4rem;
+  color: var(--oscuro);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.modal-detalle-descripcion {
+  color: #6b6070;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 14px 0 24px;
+}
+
+.btn-cerrar-detalle {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  border: none;
+  background: rgba(255,255,255,0.85);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--oscuro);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 640px) {
+  .modal-detalle {
+    grid-template-columns: 1fr;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  .modal-detalle-imagen img {
+    aspect-ratio: 1 / 1;
+  }
+}
+
 /* --- Nosotros / Contacto --- */
 .nosotros, .contacto {
   padding: 72px 32px;

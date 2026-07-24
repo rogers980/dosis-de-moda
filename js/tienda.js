@@ -60,11 +60,11 @@ function renderizarProductos() {
     const tarjeta = document.createElement("div");
     tarjeta.className = "tarjeta-producto revelar";
     tarjeta.innerHTML = `
-      <div class="tarjeta-imagen">
+      <div class="tarjeta-imagen" data-id="${producto.id}">
         ${producto.nuevo ? '<span class="insignia-nuevo">Nuevo</span>' : ""}
         <img src="${producto.img}" alt="${producto.nombre}">
       </div>
-      <h3>${producto.nombre}</h3>
+      <h3 data-id="${producto.id}">${producto.nombre}</h3>
       <p class="precio">${formatearPrecio(producto.precio)}</p>
       <button class="btn-agregar" data-id="${producto.id}">Agregar al carrito</button>
     `;
@@ -80,6 +80,83 @@ function renderizarProductos() {
       animarIconoCarrito();
     });
   });
+
+  document.querySelectorAll(".tarjeta-imagen, .tarjeta-producto h3").forEach((elemento) => {
+    elemento.addEventListener("click", () => {
+      abrirDetalleProducto(Number(elemento.dataset.id));
+    });
+  });
+}
+
+// --- Modal de detalle / inspección de producto ---
+let detalleImagenes = [];
+let detalleIndice = 0;
+
+function obtenerImagenes(producto) {
+  return producto.imagenes && producto.imagenes.length ? producto.imagenes : [producto.img];
+}
+
+function pintarImagenDetalle() {
+  const img = document.getElementById("detalle-img");
+  img.src = detalleImagenes[detalleIndice];
+  img.classList.remove("zoom");
+
+  const hayVarias = detalleImagenes.length > 1;
+  document.getElementById("detalle-flecha-izq").hidden = !hayVarias;
+  document.getElementById("detalle-flecha-der").hidden = !hayVarias;
+
+  const puntos = document.getElementById("detalle-puntos");
+  if (hayVarias) {
+    puntos.innerHTML = detalleImagenes
+      .map((_, i) => `<button class="detalle-punto ${i === detalleIndice ? "activo" : ""}" data-i="${i}"></button>`)
+      .join("");
+    puntos.querySelectorAll(".detalle-punto").forEach((punto) => {
+      punto.addEventListener("click", () => {
+        detalleIndice = Number(punto.dataset.i);
+        pintarImagenDetalle();
+      });
+    });
+  } else {
+    puntos.innerHTML = "";
+  }
+}
+
+function moverDetalle(delta) {
+  const total = detalleImagenes.length;
+  detalleIndice = (detalleIndice + delta + total) % total;
+  pintarImagenDetalle();
+}
+
+function abrirDetalleProducto(id) {
+  const producto = productos.find((p) => p.id === id);
+  if (!producto) return;
+
+  detalleImagenes = obtenerImagenes(producto);
+  detalleIndice = 0;
+  pintarImagenDetalle();
+
+  document.getElementById("detalle-img").alt = producto.nombre;
+  document.getElementById("detalle-nombre").textContent = producto.nombre;
+  document.getElementById("detalle-precio").textContent = formatearPrecio(producto.precio);
+  document.getElementById("detalle-categoria").textContent = NOMBRES_CATEGORIA[producto.categoria] || producto.categoria;
+
+  const insignia = document.getElementById("detalle-insignia");
+  insignia.hidden = !producto.nuevo;
+
+  const btnAgregar = document.getElementById("detalle-btn-agregar");
+  btnAgregar.onclick = () => {
+    agregarAlCarrito(id);
+    animarBotonAgregado(btnAgregar);
+    animarIconoCarrito();
+  };
+
+  document.getElementById("overlay-detalle").classList.add("visible");
+  document.getElementById("modal-detalle").classList.add("abierto");
+}
+
+function cerrarDetalleProducto() {
+  document.getElementById("overlay-detalle").classList.remove("visible");
+  document.getElementById("modal-detalle").classList.remove("abierto");
 }
 
 // --- Micro-animaciones al agregar un producto ---
@@ -220,6 +297,21 @@ document.getElementById("btn-carrito").addEventListener("click", abrirCarrito);
 document.getElementById("btn-cerrar-carrito").addEventListener("click", cerrarCarrito);
 document.getElementById("overlay-carrito").addEventListener("click", cerrarCarrito);
 document.getElementById("btn-checkout").addEventListener("click", finalizarCompra);
+
+// --- Conectar el modal de detalle de producto ---
+document.getElementById("btn-cerrar-detalle").addEventListener("click", cerrarDetalleProducto);
+document.getElementById("overlay-detalle").addEventListener("click", cerrarDetalleProducto);
+document.getElementById("detalle-img").addEventListener("click", (e) => {
+  e.target.classList.toggle("zoom");
+});
+document.getElementById("detalle-flecha-izq").addEventListener("click", () => moverDetalle(-1));
+document.getElementById("detalle-flecha-der").addEventListener("click", () => moverDetalle(1));
+document.addEventListener("keydown", (e) => {
+  if (!document.getElementById("modal-detalle").classList.contains("abierto")) return;
+  if (e.key === "Escape") cerrarDetalleProducto();
+  if (e.key === "ArrowLeft") moverDetalle(-1);
+  if (e.key === "ArrowRight") moverDetalle(1);
+});
 
 // --- Enlaces de WhatsApp (botón flotante y sección de contacto) ---
 const NUMERO_WHATSAPP_CREADOR = "584246101683";

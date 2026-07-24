@@ -53,7 +53,7 @@
 
   <div class="hero-stats">
     <div class="stat">
-      <span class="stat-numero" data-hasta="34">0</span>
+      <span class="stat-numero" data-hasta="44">0</span>
       <span class="stat-etiqueta">Modelos</span>
     </div>
     <div class="stat">
@@ -194,6 +194,26 @@
     <button id="btn-checkout" class="btn-checkout">Finalizar compra por WhatsApp</button>
   </div>
 </aside>
+
+<!-- Modal de detalle / inspección de producto -->
+<div id="overlay-detalle" class="overlay-carrito"></div>
+<div id="modal-detalle" class="modal-detalle">
+  <button id="btn-cerrar-detalle" class="btn-cerrar-detalle" aria-label="Cerrar detalle">✕</button>
+  <div class="modal-detalle-imagen">
+    <span id="detalle-insignia" class="insignia-nuevo" hidden>Nuevo</span>
+    <img id="detalle-img" src="" alt="">
+    <button id="detalle-flecha-izq" class="detalle-flecha detalle-flecha-izq" aria-label="Foto anterior">‹</button>
+    <button id="detalle-flecha-der" class="detalle-flecha detalle-flecha-der" aria-label="Foto siguiente">›</button>
+    <div id="detalle-puntos" class="detalle-puntos"></div>
+  </div>
+  <div class="modal-detalle-info">
+    <span id="detalle-categoria" class="modal-detalle-categoria"></span>
+    <h3 id="detalle-nombre"></h3>
+    <p id="detalle-precio" class="precio"></p>
+    <p class="modal-detalle-descripcion">Cartera para dama, ideal para el día a día. Interior amplio, cierre seguro y acabados cuidados en cada detalle.</p>
+    <button id="detalle-btn-agregar" class="btn-agregar">Agregar al carrito</button>
+  </div>
+</div>
 
 <script src="js/productos.js"></script>
 <script src="js/animaciones.js"></script>
