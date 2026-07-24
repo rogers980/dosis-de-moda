@@ -1,5 +1,5 @@
 const productos = [
-  { id: 1, nombre: "Cartera Coral Sunset", precio: 28.99, img: "img/cartera1.svg", categoria: "hombro" },
+  { id: 1, nombre: "Monedero Coral Cerezas", precio: 28.99, img: "img/reales/cartera-real-51.jpg", categoria: "mini" },
   { id: 2, nombre: "Cartera Beige Tejida", precio: 32.50, img: "img/reales/cartera-real-21.jpg", categoria: "hombro" },
   { id: 3, nombre: "Cartera Naranja Compacta", precio: 25.00, img: "img/reales/cartera-real-22.jpg", categoria: "hombro" },
   { id: 4, nombre: "Cartera Vino Abovedada", precio: 29.99, img: "img/reales/cartera-real-23.jpg", categoria: "hombro" },
