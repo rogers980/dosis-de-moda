@@ -496,8 +496,38 @@ function configurarEnlacesWhatsapp() {
   document.getElementById("link-whatsapp-creador").href = `https://wa.me/${NUMERO_WHATSAPP_CREADOR}?text=${mensajeCreador}`;
 }
 
+// --- Mini carrusel de destacados en el hero ---
+function iniciarDestacados() {
+  const contenedor = document.getElementById("destacado-mini");
+  if (!contenedor) return;
+
+  const destacados = productos.filter((p) => p.nuevo).slice(0, 6);
+  if (destacados.length === 0) return;
+
+  let indice = 0;
+
+  function pintar() {
+    const producto = destacados[indice];
+    document.getElementById("destacado-img").src = producto.img;
+    document.getElementById("destacado-nombre").textContent = producto.nombre;
+    document.getElementById("destacado-precio").textContent = formatearPrecio(producto.precio);
+  }
+
+  pintar();
+
+  setInterval(() => {
+    contenedor.classList.add("cambiando");
+    setTimeout(() => {
+      indice = (indice + 1) % destacados.length;
+      pintar();
+      contenedor.classList.remove("cambiando");
+    }, 350);
+  }, 3200);
+}
+
 // --- Inicio ---
 renderizarFiltros();
 renderizarProductos();
 renderizarCarrito();
 configurarEnlacesWhatsapp();
+iniciarDestacados();
