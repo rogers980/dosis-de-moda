@@ -85,20 +85,43 @@ h1, h2, h3, .marca {
   border: none;
   background: linear-gradient(135deg, var(--rosa), var(--naranja));
   color: #fff;
-  font-size: 1.1rem;
-  padding: 10px 16px;
-  border-radius: 999px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
   cursor: pointer;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(255,77,141,0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-carrito:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(255,77,141,0.45);
+}
+
+.btn-carrito svg {
+  width: 22px;
+  height: 22px;
 }
 
 .contador-carrito {
+  position: absolute;
+  top: -4px;
+  right: -4px;
   background: #fff;
   color: var(--rosa);
+  border: 2px solid var(--rosa);
   border-radius: 999px;
-  padding: 1px 7px;
-  font-size: 0.8rem;
-  margin-left: 4px;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0 4px;
 }
 
 /* --- Menú hamburguesa (mobile) --- */
