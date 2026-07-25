@@ -1746,3 +1746,220 @@ h1, h2, h3, .marca {
     font-size: 1.5rem;
   }
 }
+
+/* ==========================================================================
+   --- Chat con el asistente virtual (catálogo D&M) ---
+   ========================================================================== */
+
+.btn-chat {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  width: 58px;
+  height: 58px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rosa), var(--morado));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(123,47,247,0.35);
+  z-index: 85;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-chat:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 22px rgba(123,47,247,0.45);
+}
+
+.panel-chat {
+  position: fixed;
+  bottom: 170px;
+  right: 24px;
+  width: 360px;
+  max-width: 92vw;
+  height: 480px;
+  max-height: 70vh;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.28);
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(16px) scale(0.96);
+  transform-origin: bottom right;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.panel-chat.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.panel-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--rosa), var(--morado));
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.panel-chat-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.btn-cerrar-chat {
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.btn-cerrar-chat:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.lista-chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--fondo);
+}
+
+.burbuja-chat {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.burbuja-usuario {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--rosa), var(--morado));
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.burbuja-bot {
+  align-self: flex-start;
+  background: #fdeef5;
+  color: var(--oscuro);
+  border-bottom-left-radius: 4px;
+}
+
+.burbuja-escribiendo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 14px;
+}
+
+.burbuja-escribiendo span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--morado);
+  opacity: 0.5;
+  animation: rebotarPuntoChat 1s ease-in-out infinite;
+}
+
+.burbuja-escribiendo span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.burbuja-escribiendo span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes rebotarPuntoChat {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(-4px); opacity: 1; }
+}
+
+.form-chat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-top: 1px solid #f0e6ee;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.input-chat {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #f0e0ea;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  color: var(--gris-texto);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input-chat:focus {
+  border-color: var(--rosa);
+}
+
+.btn-enviar-chat {
+  flex-shrink: 0;
+  border: none;
+  background: linear-gradient(135deg, var(--rosa), var(--morado));
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-enviar-chat:hover {
+  transform: scale(1.08);
+}
+
+@media (max-width: 480px) {
+  .btn-chat {
+    bottom: 90px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+  }
+  .panel-chat {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 88vh;
+    max-height: 88vh;
+    border-radius: 20px 20px 0 0;
+  }
+}
