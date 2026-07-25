@@ -1,6 +1,5 @@
 // --- Chat con el asistente virtual del catálogo D&M Dosis de Moda ---
 const CHAT_ENDPOINT = "https://tnwgqivmigqlckmiazhc.supabase.co/functions/v1/chat-web";
-const CHAT_API_KEY = "sb_publishable__vqdpsAOeOFaAHIb7vg3jw_WhMkm7Su";
 const CHAT_MENSAJE_ERROR = "No pude conectar en este momento. Escríbenos por WhatsApp.";
 const CHAT_SALUDO_INICIAL = "¡Hola! Pregúntame por alguna cartera de nuestro catálogo (color, tipo, precio) 👜";
 
@@ -69,7 +68,6 @@ async function enviarMensajeChat(mensaje) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        apiKey: CHAT_API_KEY,
       },
       body: JSON.stringify({ mensaje }),
     });
