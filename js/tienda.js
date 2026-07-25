@@ -192,10 +192,11 @@ function abrirDetalleProducto(id) {
   insignia.hidden = !producto.nuevo;
 
   const btnAgregar = document.getElementById("detalle-btn-agregar");
-  btnAgregar.onclick = () => {
+  btnAgregar.onclick = (e) => {
     agregarAlCarrito(id);
     animarBotonAgregado(btnAgregar);
     animarIconoCarrito();
+    lanzarConfeti(e.clientX, e.clientY);
   };
 
   document.getElementById("overlay-detalle").classList.add("visible");
@@ -358,6 +359,21 @@ function cerrarCarrito() {
   document.getElementById("overlay-carrito").classList.remove("visible");
 }
 
+// --- Abrir / cerrar el menú de navegación (mobile) ---
+function alternarMenu() {
+  const boton = document.getElementById("btn-menu");
+  const nav = document.getElementById("nav-principal");
+  const abierto = boton.classList.toggle("abierto");
+  nav.classList.toggle("abierto");
+  boton.setAttribute("aria-expanded", abierto);
+}
+
+function cerrarMenu() {
+  document.getElementById("btn-menu").classList.remove("abierto");
+  document.getElementById("nav-principal").classList.remove("abierto");
+  document.getElementById("btn-menu").setAttribute("aria-expanded", "false");
+}
+
 // --- Checkout por WhatsApp ---
 function finalizarCompra() {
   if (carrito.length === 0) {
@@ -463,6 +479,12 @@ document.getElementById("btn-carrito").addEventListener("click", abrirCarrito);
 document.getElementById("btn-cerrar-carrito").addEventListener("click", cerrarCarrito);
 document.getElementById("overlay-carrito").addEventListener("click", cerrarCarrito);
 document.getElementById("btn-checkout").addEventListener("click", finalizarCompra);
+
+// --- Conectar el menú hamburguesa (mobile) ---
+document.getElementById("btn-menu").addEventListener("click", alternarMenu);
+document.querySelectorAll(".nav-principal a").forEach((enlace) => {
+  enlace.addEventListener("click", cerrarMenu);
+});
 
 // --- Conectar el modal de detalle de producto ---
 document.getElementById("btn-cerrar-detalle").addEventListener("click", cerrarDetalleProducto);
