@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel D&amp;M — Stock</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css">
+<style>
+  body { padding: 32px 20px 80px; background: var(--fondo); }
+  .panel-envoltorio { max-width: 780px; margin: 0 auto; }
+  .panel-cabecera { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px; flex-wrap: wrap; }
+  .panel-cabecera h1 { font-size: 1.5rem; color: var(--oscuro); }
+  .panel-cabecera a { font-size: 0.85rem; color: var(--morado); text-decoration: none; }
+  .panel-subtitulo { color: #7a7288; font-size: 0.9rem; margin-bottom: 28px; }
+  .fila-panel { display: flex; align-items: center; gap: 14px; background: #fff; border-radius: 16px; padding: 12px 16px; margin-bottom: 10px; box-shadow: 0 6px 16px rgba(43,16,85,0.08); }
+  .fila-panel img { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; flex-shrink: 0; }
+  .fila-panel-info { flex: 1; min-width: 0; }
+  .fila-panel-info h3 { font-size: 0.92rem; color: var(--oscuro); margin-bottom: 2px; }
+  .fila-panel-stock { font-family: "Space Mono", monospace; font-size: 0.78rem; color: #7a7288; }
+  .fila-panel-stock b { color: var(--oscuro); }
+  .fila-panel-acciones { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .btn-vendida { background: var(--rosa); color: #fff; border: none; border-radius: 999px; padding: 8px 14px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+  .input-restock { width: 54px; border: 1px solid rgba(123,47,247,0.2); border-radius: 8px; padding: 7px 6px; font-family: "Space Mono", monospace; font-size: 0.82rem; text-align: center; }
+  .btn-guardar { background: var(--morado); color: #fff; border: none; border-radius: 999px; padding: 8px 14px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+  .panel-nota { font-size: 0.8rem; color: #9b8fb8; margin-top: 20px; }
+  @media (max-width: 560px) {
+    .fila-panel { flex-wrap: wrap; }
+    .fila-panel-acciones { width: 100%; justify-content: flex-end; }
+  }
+</style>
+</head>
+<body>
+  <div class="panel-envoltorio">
+    <div class="panel-cabecera">
+      <h1>Panel de stock</h1>
+      <a href="index.html">&larr; Volver a la tienda</a>
+    </div>
+    <p class="panel-subtitulo">Marca "vendida" cuando cierres una venta por WhatsApp, o corrige la cantidad si llega mercancía nueva. Te va a pedir tu PIN la primera vez.</p>
+    <div id="lista-panel">Cargando…</div>
+    <p class="panel-nota">Esto actualiza el stock real que ven todas las clientas en la tienda.</p>
+  </div>
+
+  <script src="js/productos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

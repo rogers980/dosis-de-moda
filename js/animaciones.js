@@ -47,29 +47,6 @@ function activarTiltLogo() {
   });
 }
 
-// --- Contador animado de estadísticas del hero ---
-function animarContador(elemento) {
-  const meta = Number(elemento.dataset.hasta);
-  const duracion = 1400;
-  const inicio = performance.now();
-
-  function paso(ahora) {
-    const progreso = Math.min((ahora - inicio) / duracion, 1);
-    elemento.textContent = Math.floor(progreso * meta);
-    if (progreso < 1) {
-      requestAnimationFrame(paso);
-    } else {
-      elemento.textContent = meta;
-    }
-  }
-  requestAnimationFrame(paso);
-}
-
-function activarContadoresHero() {
-  const stats = document.querySelectorAll(".stat-numero");
-  stats.forEach((stat) => animarContador(stat));
-}
-
 // --- Revelado progresivo de secciones al hacer scroll ---
 const observadorRevelado = new IntersectionObserver(
   (entradas) => {
@@ -112,6 +89,5 @@ function activarBotonArriba() {
 escribirTexto("texto-escritura", "Tu estilo, en dosis perfectas");
 crearParticulas();
 activarTiltLogo();
-activarContadoresHero();
 iniciarRevelados();
 activarBotonArriba();

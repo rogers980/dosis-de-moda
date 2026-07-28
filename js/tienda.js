@@ -137,6 +137,8 @@ const IMAGENES_CATEGORIA = {
 let categoriaActiva = "todas";
 let soloFavoritos = false;
 let textoBusqueda = "";
+let filtroLinea = null;
+let mapaStock = {};
 
 // --- WebP con fallback a JPG (mismo nombre, misma carpeta) ---
 function rutaWebp(rutaJpg) {
@@ -165,6 +167,7 @@ function renderizarFiltros() {
 
   document.querySelectorAll(".burbuja-categoria").forEach((burbuja) => {
     burbuja.addEventListener("click", () => {
+      filtroLinea = null;
       categoriaActiva = burbuja.dataset.categoria;
       renderizarFiltros();
       renderizarProductos();
@@ -172,51 +175,63 @@ function renderizarFiltros() {
   });
 }
 
-// --- Colecciones (vista general por categoría, en la home) ---
-function irACategoriaDesdeColeccion(cat) {
-  categoriaActiva = cat;
+// --- Líneas "Dosis" (vista general en la home, cápsulas por ocasión) ---
+const LINEAS = {
+  diaria: {
+    nombre: "Dosis Diaria",
+    descripcion: "Hombro, satchel y tote — las que cargas todos los días.",
+    categorias: ["hombro", "satchel", "tote"],
+    fotos: ["img/reales/cartera-real-21.jpg", "img/reales/cartera-real-32.jpg"],
+    fondo: "linear-gradient(135deg,#7b2ff7,#2b1055)",
+  },
+  nocturna: {
+    nombre: "Dosis Nocturna",
+    descripcion: "Clutch y mini — para cuando el plan es de noche.",
+    categorias: ["clutch", "mini"],
+    fotos: ["img/reales/cartera-real-7.jpg", "img/reales/cartera-real-39.jpg"],
+    fondo: "linear-gradient(135deg,#ff4d8d,#c22463)",
+  },
+  aventura: {
+    nombre: "Dosis Aventura",
+    descripcion: "Bandolera y bucket — plan casual, para el finde.",
+    categorias: ["bandolera", "bucket"],
+    fotos: ["img/reales/cartera-real-35.jpg", "img/reales/cartera-real-1.jpg"],
+    fondo: "linear-gradient(135deg,#00c9a7,#0d7a68)",
+  },
+};
+
+function irALineaDesdeCapsula(clave) {
+  filtroLinea = clave;
+  categoriaActiva = "todas";
   renderizarFiltros();
   renderizarProductos();
   document.getElementById("catalogo").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-const SVG_BOLSA_INSIGNIA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>`;
-const SVG_TODO_INSIGNIA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`;
-
-function renderizarColecciones() {
-  const contenedor = document.getElementById("grid-colecciones");
+function renderizarLineas() {
+  const contenedor = document.getElementById("grid-lineas");
   if (!contenedor) return;
 
-  const categorias = [...new Set(productos.map((p) => p.categoria))];
-
-  const tarjetaTodo = `
-    <button class="tarjeta-coleccion tarjeta-coleccion-todo" data-categoria="todas">
-      <span class="tarjeta-coleccion-insignia">${SVG_TODO_INSIGNIA}</span>
-      <span class="tarjeta-coleccion-etiqueta">
-        <span class="tarjeta-coleccion-nombre">Ver todo</span>
-        <span class="tarjeta-coleccion-cantidad">${productos.length} modelos en total</span>
-      </span>
-    </button>`;
-
-  const tarjetasCategoria = categorias
-    .map((cat) => {
-      const cantidad = productos.filter((p) => p.categoria === cat).length;
-      const imagen = IMAGENES_CATEGORIA[cat];
+  contenedor.innerHTML = Object.entries(LINEAS)
+    .map(([clave, linea], indice) => {
+      const cantidad = productos.filter((p) => linea.categorias.includes(p.categoria)).length;
       return `
-      <button class="tarjeta-coleccion" data-categoria="${cat}" style="background-image:url('${imagen}')">
-        <span class="tarjeta-coleccion-insignia">${SVG_BOLSA_INSIGNIA}</span>
-        <span class="tarjeta-coleccion-etiqueta">
-          <span class="tarjeta-coleccion-nombre">${NOMBRES_CATEGORIA[cat] || cat}</span>
-          <span class="tarjeta-coleccion-cantidad">${cantidad} modelo${cantidad === 1 ? "" : "s"}</span>
+      <button class="capsula" data-linea="${clave}" style="--capsula-bg:${linea.fondo}">
+        <span class="capsula-fotos">
+          ${linea.fotos.map((f) => etiquetaImagen(f, linea.nombre)).join("")}
+        </span>
+        <span class="capsula-info">
+          <span class="capsula-eyebrow">Línea ${String(indice + 1).padStart(2, "0")}</span>
+          <span class="capsula-nombre">${linea.nombre}</span>
+          <span class="capsula-desc">${linea.descripcion}</span>
+          <span class="capsula-resumen"><span><b>${cantidad}</b>modelos</span><span><b>5</b>und. c/u</span></span>
         </span>
       </button>`;
     })
     .join("");
 
-  contenedor.innerHTML = tarjetaTodo + tarjetasCategoria;
-
-  contenedor.querySelectorAll(".tarjeta-coleccion").forEach((tarjeta) => {
-    tarjeta.addEventListener("click", () => irACategoriaDesdeColeccion(tarjeta.dataset.categoria));
+  contenedor.querySelectorAll(".capsula").forEach((capsula) => {
+    capsula.addEventListener("click", () => irALineaDesdeCapsula(capsula.dataset.linea));
   });
 }
 
@@ -246,10 +261,15 @@ function renderizarProductos() {
   const grid = document.getElementById("grid-productos");
   grid.innerHTML = "";
 
-  let productosFiltrados =
-    categoriaActiva === "todas"
-      ? productos
-      : productos.filter((p) => p.categoria === categoriaActiva);
+  let productosFiltrados;
+  if (filtroLinea) {
+    const categoriasLinea = LINEAS[filtroLinea].categorias;
+    productosFiltrados = productos.filter((p) => categoriasLinea.includes(p.categoria));
+  } else if (categoriaActiva === "todas") {
+    productosFiltrados = productos;
+  } else {
+    productosFiltrados = productos.filter((p) => p.categoria === categoriaActiva);
+  }
 
   if (soloFavoritos) {
     productosFiltrados = productosFiltrados.filter((p) => favoritos.includes(p.id));
@@ -266,6 +286,8 @@ function renderizarProductos() {
       ? `${productosFiltrados.length} resultado${productosFiltrados.length === 1 ? "" : "s"} para "${textoBusqueda.trim()}"`
       : soloFavoritos
       ? `${productosFiltrados.length} favorito${productosFiltrados.length === 1 ? "" : "s"}`
+      : filtroLinea
+      ? `${productosFiltrados.length} modelos en ${LINEAS[filtroLinea].nombre}`
       : `Mostrando ${productosFiltrados.length} de ${productos.length}`;
   }
 
@@ -277,11 +299,22 @@ function renderizarProductos() {
 
   productosFiltrados.forEach((producto) => {
     const tarjeta = document.createElement("div");
-    tarjeta.className = "tarjeta-producto revelar";
+    const stock = mapaStock[producto.id];
+    const agotado = stock === 0;
+    tarjeta.className = "tarjeta-producto revelar" + (agotado ? " agotada" : "");
     const esFavorito = favoritos.includes(producto.id);
+    const etiquetaStock =
+      stock === undefined
+        ? ""
+        : agotado
+        ? '<span class="etiqueta-stock agotado">Agotado</span>'
+        : stock <= 2
+        ? `<span class="etiqueta-stock poca">Quedan ${stock}</span>`
+        : `<span class="etiqueta-stock">Quedan ${stock}</span>`;
     tarjeta.innerHTML = `
       <div class="tarjeta-imagen" data-id="${producto.id}">
         ${producto.nuevo ? '<span class="insignia-nuevo">Nuevo</span>' : producto.masVendido ? '<span class="insignia-vendido">🔥 Más Vendido</span>' : ""}
+        ${etiquetaStock}
         <button class="btn-favorito ${esFavorito ? "activo" : ""}" data-id="${producto.id}" aria-label="Marcar como favorito">${esFavorito ? "❤️" : "🤍"}</button>
         <a href="${enlaceCompartir(producto)}" class="btn-compartir" target="_blank" rel="noopener" aria-label="Compartir por WhatsApp" onclick="event.stopPropagation()">${SVG_WHATSAPP}</a>
         <span class="tarjeta-brillo"></span>
@@ -293,7 +326,7 @@ function renderizarProductos() {
           ? `<p class="precio-oferta"><span class="precio-antes">${formatearPrecio(producto.precioAntes)}</span><span class="precio">${formatearPrecio(producto.precio)}</span></p>`
           : `<p class="precio">${formatearPrecio(producto.precio)}</p>`
       }
-      <button class="btn-agregar" data-id="${producto.id}">Agregar al carrito</button>
+      <button class="btn-agregar" data-id="${producto.id}" ${agotado ? "disabled" : ""}>${agotado ? "Agotado" : "Agregar al carrito"}</button>
     `;
     grid.appendChild(tarjeta);
     observarRevelado(tarjeta);
@@ -937,7 +970,7 @@ function iniciarDestacados() {
 }
 
 // --- Inicio ---
-renderizarColecciones();
+renderizarLineas();
 renderizarFiltros();
 configurarBuscador();
 renderizarProductos();
