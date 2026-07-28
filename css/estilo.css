@@ -1888,9 +1888,20 @@ body.oscuro .colecciones-subtitulo {
 }
 
 .cuidado-icono {
-  font-size: 1.6rem;
-  display: block;
-  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rosa), var(--morado));
+  color: #fff;
+}
+
+.cuidado-icono svg {
+  width: 22px;
+  height: 22px;
 }
 
 .cuidado-tip p {
