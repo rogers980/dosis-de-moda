@@ -35,9 +35,11 @@ function desplazarChatAbajo() {
 
 // --- Abrir / cerrar el panel del chat ---
 function abrirChat() {
-  document.getElementById("panel-chat").classList.add("visible");
+  const panel = document.getElementById("panel-chat");
+  panel.classList.add("visible");
   document.getElementById("btn-chat").setAttribute("aria-expanded", "true");
   chatAbierto = true;
+  if (typeof activarTrampaFoco === "function") activarTrampaFoco(panel);
 
   if (!chatSaludoMostrado) {
     chatSaludoMostrado = true;
@@ -46,9 +48,12 @@ function abrirChat() {
 }
 
 function cerrarChat() {
-  document.getElementById("panel-chat").classList.remove("visible");
+  if (!chatAbierto) return;
+  const panel = document.getElementById("panel-chat");
+  panel.classList.remove("visible");
   document.getElementById("btn-chat").setAttribute("aria-expanded", "false");
   chatAbierto = false;
+  if (typeof desactivarTrampaFoco === "function") desactivarTrampaFoco(panel);
 }
 
 function alternarChat() {

@@ -1,0 +1,17 @@
+{
+  "name": "D&M Dosis de Moda",
+  "short_name": "D&M",
+  "description": "Carteras para damas llenas de color, actitud y personalidad.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff8fb",
+  "theme_color": "#ff4d8d",
+  "icons": [
+    {
+      "src": "img/icono-app.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
