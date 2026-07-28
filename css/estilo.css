@@ -716,6 +716,10 @@ body.oscuro .btn-modo-oscuro .icono-luna {
   justify-content: center;
 }
 
+.btn-limpiar-buscador[hidden] {
+  display: none;
+}
+
 body.oscuro .input-buscador {
   background: rgba(255,255,255,0.06);
   border-color: rgba(255,255,255,0.14);
@@ -2845,6 +2849,10 @@ body.oscuro .cuidado-tip p,
 body.oscuro .nosotros-texto p,
 body.oscuro .testimonio-texto {
   color: #c9c2db;
+}
+
+body.oscuro .testimonio-nombre {
+  color: #e8e3f2;
 }
 
 body.oscuro .chip-categoria,
