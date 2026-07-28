@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Borrador B — Cápsulas D&amp;M</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css">
+<style>
+  body { padding: 40px 24px 80px; background: var(--fondo); }
+  .borrador-aviso { max-width: 900px; margin: 0 auto 40px; background: #fff4e3; border: 1.5px dashed var(--dorado); border-radius: 14px; padding: 16px 22px; font-family: "Space Mono", monospace; font-size: 0.8rem; color: var(--oscuro); }
+  .capsulas { max-width: 1100px; margin: 0 auto 60px; display: flex; flex-direction: column; gap: 28px; }
+  .capsula { position: relative; border-radius: 26px; overflow: hidden; display: grid; grid-template-columns: 1.1fr 1fr; min-height: 260px; box-shadow: 0 16px 40px rgba(43,16,85,0.16); }
+  .capsula-fotos { position: relative; display: grid; grid-template-columns: 1fr 1fr; }
+  .capsula-fotos img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .capsula-info { background: var(--capsula-bg); color: #fff; padding: 32px 34px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+  .capsula-eyebrow { font-family: "Space Mono", monospace; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; }
+  .capsula-nombre { font-family: "Poppins", sans-serif; font-weight: 800; font-size: 2rem; }
+  .capsula-desc { font-size: 0.98rem; opacity: 0.92; max-width: 380px; }
+  .capsula-resumen { display: flex; gap: 18px; margin-top: 6px; font-family: "Space Mono", monospace; font-size: 0.78rem; }
+  .capsula-resumen b { font-size: 1.1rem; display: block; font-family: "Poppins", sans-serif; }
+  @media (max-width: 720px) {
+    .capsula { grid-template-columns: 1fr; }
+    .capsula-fotos { min-height: 180px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="borrador-aviso">
+  BORRADOR — no publicado. Cada bloque de aquí sería clicable y llevaría al catálogo filtrado por esa línea (como ya hacen las tarjetas de "Colecciones" hoy). Las fotos de cada cápsula son reales del catálogo actual, solo agrupadas distinto.
+</div>
+
+<div class="capsulas">
+
+  <div class="capsula" style="--capsula-bg: linear-gradient(135deg,#7b2ff7,#2b1055)">
+    <div class="capsula-fotos">
+      <img src="img/reales/cartera-real-21.jpg" alt="">
+      <img src="img/reales/cartera-real-32.jpg" alt="">
+    </div>
+    <div class="capsula-info">
+      <span class="capsula-eyebrow">Línea 01</span>
+      <h2 class="capsula-nombre">Dosis Diaria</h2>
+      <p class="capsula-desc">Hombro, satchel y tote — las que cargas todos los días, sin pensarlo dos veces.</p>
+      <div class="capsula-resumen"><span><b>21</b>modelos</span><span><b>5</b>und. c/u</span></div>
+    </div>
+  </div>
+
+  <div class="capsula" style="--capsula-bg: linear-gradient(135deg,#ff4d8d,#c22463)">
+    <div class="capsula-fotos">
+      <img src="img/reales/cartera-real-7.jpg" alt="">
+      <img src="img/reales/cartera-real-39.jpg" alt="">
+    </div>
+    <div class="capsula-info">
+      <span class="capsula-eyebrow">Línea 02</span>
+      <h2 class="capsula-nombre">Dosis Nocturna</h2>
+      <p class="capsula-desc">Clutch y mini — para cuando el plan es de noche y hay que verse bien.</p>
+      <div class="capsula-resumen"><span><b>12</b>modelos</span><span><b>5</b>und. c/u</span></div>
+    </div>
+  </div>
+
+  <div class="capsula" style="--capsula-bg: linear-gradient(135deg,#00c9a7,#0d7a68)">
+    <div class="capsula-fotos">
+      <img src="img/reales/cartera-real-35.jpg" alt="">
+      <img src="img/reales/cartera-real-42.jpg" alt="">
+    </div>
+    <div class="capsula-info">
+      <span class="capsula-eyebrow">Línea 03</span>
+      <h2 class="capsula-nombre">Dosis Aventura</h2>
+      <p class="capsula-desc">Bandolera y bucket — plan casual, finde, mochilera con estilo.</p>
+      <div class="capsula-resumen"><span><b>10</b>modelos</span><span><b>5</b>und. c/u</span></div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Borrador A — Etiquetas de Dosis</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css">
+<style>
+  body { padding: 40px 24px 80px; background: var(--fondo); }
+  .borrador-aviso { max-width: 900px; margin: 0 auto 40px; background: #fff4e3; border: 1.5px dashed var(--dorado); border-radius: 14px; padding: 16px 22px; font-family: "Space Mono", monospace; font-size: 0.8rem; color: var(--oscuro); }
+  .linea-bloque { max-width: 1100px; margin: 0 auto 56px; }
+  .linea-cabecera { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; border-bottom: 2px solid var(--linea-color); padding-bottom: 10px; }
+  .linea-nombre { font-family: "Poppins", sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--linea-color); }
+  .linea-desc { font-size: 0.92rem; color: var(--gris-texto); }
+  .linea-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 20px; }
+  .tarjeta-mini { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 8px 20px rgba(43,16,85,0.1); position: relative; }
+  .tarjeta-mini img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+  .tarjeta-mini-info { padding: 12px 14px 16px; }
+  .tarjeta-mini h4 { font-size: 0.92rem; color: var(--oscuro); margin-bottom: 4px; }
+  .tarjeta-mini .precio { font-weight: 700; color: var(--rosa); font-size: 0.95rem; }
+  .etiqueta-stock { position: absolute; top: 10px; left: 10px; font-family: "Space Mono", monospace; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.4px; padding: 4px 9px; border-radius: 999px; background: #fff4e3; border: 1px solid var(--dorado); color: var(--oscuro); text-transform: uppercase; }
+  .etiqueta-stock.poca { background: #fff0ea; border-color: var(--naranja); color: #b5451c; }
+  .etiqueta-stock.agotado { background: #f1eef5; border-color: #b9aecb; color: #857a99; }
+  .tarjeta-mini.agotada img { filter: grayscale(0.5) opacity(0.55); }
+</style>
+</head>
+<body>
+
+<div class="borrador-aviso">
+  BORRADOR — no publicado. Los números de "quedan X" de acá son de ejemplo para que veas el estilo de la etiqueta; el real es 5 de cada modelo salvo que digas otra cosa.
+</div>
+
+<div class="linea-bloque" style="--linea-color:#7b2ff7">
+  <div class="linea-cabecera">
+    <div>
+      <div class="linea-nombre">Dosis Diaria</div>
+      <div class="linea-desc">Para la rutina: trabajo, universidad, mandados. Hombro, satchel y tote.</div>
+    </div>
+  </div>
+  <div class="linea-grid">
+    <div class="tarjeta-mini">
+      <span class="etiqueta-stock">Quedan 5</span>
+      <img src="img/reales/cartera-real-21.jpg" alt="Cartera Beige Tejida">
+      <div class="tarjeta-mini-info"><h4>Cartera Beige Tejida</h4><span class="precio">$32.50</span></div>
+    </div>
+    <div class="tarjeta-mini">
+      <span class="etiqueta-stock poca">Quedan 2</span>
+      <img src="img/reales/cartera-real-1.jpg" alt="Satchel Violeta Ejecutiva">
+      <div class="tarjeta-mini-info"><h4>Satchel Violeta Ejecutiva</h4><span class="precio">$35.99</span></div>
+    </div>
+    <div class="tarjeta-mini">
+      <span class="etiqueta-stock">Quedan 5</span>
+      <img src="img/reales/cartera-real-32.jpg" alt="Tote Camel Minimalista">
+      <div class="tarjeta-mini-info"><h4>Tote Camel Minimalista</h4><span class="precio">$26.99</span></div>
+    </div>
+    <div class="tarjeta-mini agotada">
+      <span class="etiqueta-stock agotado">Agotado</span>
+      <img src="img/reales/cartera-real-29.jpg" alt="Satchel Cognac Doble Correa">
+      <div class="tarjeta-mini-info"><h4>Satchel Cognac Doble Correa</h4><span class="precio">$34.99</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="linea-bloque" style="--linea-color:#ff4d8d">
+  <div class="linea-cabecera">
+    <div>
+      <div class="linea-nombre">Dosis Nocturna</div>
+      <div class="linea-desc">Para salir: fiestas, cenas, la foto de la noche. Clutch y mini.</div>
+    </div>
+  </div>
+  <div class="linea-grid">
+    <div class="tarjeta-mini">
+      <span class="etiqueta-stock">Quedan 5</span>
+      <img src="img/reales/cartera-real-7.jpg" alt="Clutch Negra Cadena Dorada">
+      <div class="tarjeta-mini-info"><h4>Clutch Negra Cadena Dorada</h4><span class="precio">$29.99</span></div>
+    </div>
+    <div class="tarjeta-mini">
+      <span class="etiqueta-stock poca">Quedan 1</span>
+      <img src="img/reales/cartera-real-39.jpg" alt="Clutch Rojo Fiesta">
+      <div class="tarjeta-mini-info"><h4>Clutch Rojo Fiesta</h4><span class="precio">$26.99</span></div>
+    </div>
+    <div class="tarjeta-mini">
+      <span class="etiqueta-stock">Quedan 4</span>
+      <img src="img/reales/cartera-real-18.jpg" alt="Mini Bolso Ciruela Elegante">
+      <div class="tarjeta-mini-info"><h4>Mini Bolso Ciruela Elegante</h4><span class="precio">$29.99</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="linea-bloque" style="--linea-color:#00c9a7">
+  <div class="linea-cabecera">
+    <div>
+      <div class="linea-nombre">Dosis Aventura</div>
+      <div class="linea-desc">Para el finde y el plan casual: bandolera y bucket.</div>
+    </div>
+  </div>
+  <div class="linea-grid">
+    <div class="tarjeta-mini">
+      <span class="etiqueta-stock">Quedan 5</span>
+      <img src="img/reales/cartera-real-35.jpg" alt="Bandolera Vaquetilla Animal Print">
+      <div class="tarjeta-mini-info"><h4>Bandolera Vaquetilla Animal Print</h4><span class="precio">$27.99</span></div>
+    </div>
+    <div class="tarjeta-mini">
+      <span class="etiqueta-stock poca">Quedan 3</span>
+      <img src="img/reales/cartera-real-42.jpg" alt="Bucket Playero Rafia Natural">
+      <div class="tarjeta-mini-info"><h4>Bucket Playero Rafia Natural</h4><span class="precio">$30.99</span></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
