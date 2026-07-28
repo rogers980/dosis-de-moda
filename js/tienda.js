@@ -136,6 +136,7 @@ const IMAGENES_CATEGORIA = {
 
 let categoriaActiva = "todas";
 let soloFavoritos = false;
+let textoBusqueda = "";
 
 // --- WebP con fallback a JPG (mismo nombre, misma carpeta) ---
 function rutaWebp(rutaJpg) {
@@ -171,6 +172,75 @@ function renderizarFiltros() {
   });
 }
 
+// --- Colecciones (vista general por categoría, en la home) ---
+function irACategoriaDesdeColeccion(cat) {
+  categoriaActiva = cat;
+  renderizarFiltros();
+  renderizarProductos();
+  document.getElementById("catalogo").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+const SVG_BOLSA_INSIGNIA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>`;
+const SVG_TODO_INSIGNIA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`;
+
+function renderizarColecciones() {
+  const contenedor = document.getElementById("grid-colecciones");
+  if (!contenedor) return;
+
+  const categorias = [...new Set(productos.map((p) => p.categoria))];
+
+  const tarjetaTodo = `
+    <button class="tarjeta-coleccion tarjeta-coleccion-todo" data-categoria="todas">
+      <span class="tarjeta-coleccion-insignia">${SVG_TODO_INSIGNIA}</span>
+      <span class="tarjeta-coleccion-etiqueta">
+        <span class="tarjeta-coleccion-nombre">Ver todo</span>
+        <span class="tarjeta-coleccion-cantidad">${productos.length} modelos en total</span>
+      </span>
+    </button>`;
+
+  const tarjetasCategoria = categorias
+    .map((cat) => {
+      const cantidad = productos.filter((p) => p.categoria === cat).length;
+      const imagen = IMAGENES_CATEGORIA[cat];
+      return `
+      <button class="tarjeta-coleccion" data-categoria="${cat}" style="background-image:url('${imagen}')">
+        <span class="tarjeta-coleccion-insignia">${SVG_BOLSA_INSIGNIA}</span>
+        <span class="tarjeta-coleccion-etiqueta">
+          <span class="tarjeta-coleccion-nombre">${NOMBRES_CATEGORIA[cat] || cat}</span>
+          <span class="tarjeta-coleccion-cantidad">${cantidad} modelo${cantidad === 1 ? "" : "s"}</span>
+        </span>
+      </button>`;
+    })
+    .join("");
+
+  contenedor.innerHTML = tarjetaTodo + tarjetasCategoria;
+
+  contenedor.querySelectorAll(".tarjeta-coleccion").forEach((tarjeta) => {
+    tarjeta.addEventListener("click", () => irACategoriaDesdeColeccion(tarjeta.dataset.categoria));
+  });
+}
+
+// --- Buscador por nombre ---
+function configurarBuscador() {
+  const input = document.getElementById("input-buscador");
+  const btnLimpiar = document.getElementById("btn-limpiar-buscador");
+  if (!input || !btnLimpiar) return;
+
+  input.addEventListener("input", () => {
+    textoBusqueda = input.value;
+    btnLimpiar.hidden = textoBusqueda.trim() === "";
+    renderizarProductos();
+  });
+
+  btnLimpiar.addEventListener("click", () => {
+    input.value = "";
+    textoBusqueda = "";
+    btnLimpiar.hidden = true;
+    renderizarProductos();
+    input.focus();
+  });
+}
+
 // --- Pintar el catálogo de productos ---
 function renderizarProductos() {
   const grid = document.getElementById("grid-productos");
@@ -185,14 +255,23 @@ function renderizarProductos() {
     productosFiltrados = productosFiltrados.filter((p) => favoritos.includes(p.id));
   }
 
+  const busqueda = textoBusqueda.trim().toLowerCase();
+  if (busqueda) {
+    productosFiltrados = productosFiltrados.filter((p) => p.nombre.toLowerCase().includes(busqueda));
+  }
+
   const contadorResultados = document.getElementById("contador-resultados");
   if (contadorResultados) {
-    contadorResultados.textContent = soloFavoritos
+    contadorResultados.textContent = busqueda
+      ? `${productosFiltrados.length} resultado${productosFiltrados.length === 1 ? "" : "s"} para "${textoBusqueda.trim()}"`
+      : soloFavoritos
       ? `${productosFiltrados.length} favorito${productosFiltrados.length === 1 ? "" : "s"}`
       : `Mostrando ${productosFiltrados.length} de ${productos.length}`;
   }
 
-  if (soloFavoritos && productosFiltrados.length === 0) {
+  if (busqueda && productosFiltrados.length === 0) {
+    grid.innerHTML = `<p class="grid-vacio">No encontramos carteras que coincidan con "${textoBusqueda.trim()}". Probá con otro nombre o quitá el filtro de categoría.</p>`;
+  } else if (soloFavoritos && productosFiltrados.length === 0) {
     grid.innerHTML = `<p class="grid-vacio">Todavía no marcaste ninguna cartera como favorita. Tócala en el corazón 🤍 para guardarla acá.</p>`;
   }
 
@@ -641,9 +720,9 @@ const INFO_CONTENIDO = {
       <h5>¿Cómo compro?</h5>
       <p>Elige tu cartera en el catálogo, agrégala al carrito y finaliza tu compra por WhatsApp — ahí te confirmamos el pago y el envío.</p>
       <h5>¿Hacen envíos a todo el país?</h5>
-      <p>Sí, enviamos a toda Venezuela por Zoom, Tealca o MRW.</p>
+      <p>Sí, enviamos a toda Venezuela por Zoom, Tealca o MRW. También coordinamos entrega personal si estás en la zona.</p>
       <h5>¿Puedo pagar en dólares?</h5>
-      <p>Sí, aceptamos Zelle y Binance/USDT, además de pago móvil y transferencia bancaria.</p>
+      <p>Sí, aceptamos Zelle y Binance/USDT, además de pago móvil, transferencia bancaria y efectivo.</p>
     `,
   },
   "como-comprar": {
@@ -651,14 +730,14 @@ const INFO_CONTENIDO = {
     cuerpo: `
       <p><strong>1.</strong> Elige tu cartera en el catálogo y agrégala al carrito.</p>
       <p><strong>2.</strong> Revisa tu carrito y presiona "Finalizar compra por WhatsApp".</p>
-      <p><strong>3.</strong> Te confirmamos el pedido, el método de pago y coordinamos el envío por courier.</p>
+      <p><strong>3.</strong> Te confirmamos el pedido, el método de pago y coordinamos el envío por courier o la entrega personal.</p>
     `,
   },
   "pagos": {
     titulo: "Métodos de pago",
     cuerpo: `
       <p>Aceptamos los siguientes métodos de pago:</p>
-      <p>• Pago móvil<br>• Transferencia bancaria<br>• Zelle<br>• Binance / USDT</p>
+      <p>• Pago móvil<br>• Transferencia bancaria<br>• Zelle<br>• Binance / USDT<br>• Efectivo</p>
       <p>Te confirmamos los datos de pago por WhatsApp al momento de hacer tu pedido.</p>
     `,
   },
@@ -666,7 +745,8 @@ const INFO_CONTENIDO = {
     titulo: "Envíos",
     cuerpo: `
       <p>Enviamos a toda Venezuela con Zoom, Tealca o MRW — eliges el que te quede más cómodo.</p>
-      <p>Una vez confirmado tu pago, preparamos el pedido y te pasamos el número de guía, normalmente en 24-48 horas.</p>
+      <p>Si estás cerca, también coordinamos entrega personal sin costo de courier.</p>
+      <p>Una vez confirmado tu pago, preparamos el pedido y te pasamos el número de guía (o coordinamos la entrega), normalmente en 24-48 horas.</p>
     `,
   },
   "cambios": {
@@ -857,7 +937,9 @@ function iniciarDestacados() {
 }
 
 // --- Inicio ---
+renderizarColecciones();
 renderizarFiltros();
+configurarBuscador();
 renderizarProductos();
 renderizarCarrito();
 renderizarVistos();
