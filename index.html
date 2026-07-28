@@ -36,9 +36,11 @@
   </button>
   <nav class="nav-principal" id="nav-principal">
     <a href="#catalogo">Catálogo</a>
-    <a href="#nosotros">Nosotros</a>
     <a href="#contacto">Contacto</a>
   </nav>
+  <button id="btn-modo-oscuro" class="btn-modo-oscuro" aria-label="Cambiar a modo oscuro" aria-pressed="false">
+    <span class="icono-sol">☀️</span><span class="icono-luna">🌙</span>
+  </button>
   <button id="btn-carrito" class="btn-carrito" aria-label="Abrir carrito">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>
     <span id="contador-carrito" class="contador-carrito">0</span>
@@ -63,7 +65,7 @@
 
   <div class="hero-stats">
     <div class="stat">
-      <span class="stat-numero" data-hasta="44">0</span>
+      <span class="stat-numero" data-hasta="43">0</span>
       <span class="stat-etiqueta">Modelos</span>
     </div>
     <div class="stat">
@@ -75,13 +77,6 @@
       <span class="stat-etiqueta">% Estilo</span>
     </div>
   </div>
-
-  <a href="#catalogo" id="destacado-mini" class="destacado-mini">
-    <span class="destacado-etiqueta">✨ Destacado</span>
-    <img id="destacado-img" src="" alt="">
-    <p id="destacado-nombre"></p>
-    <p id="destacado-precio" class="destacado-precio"></p>
-  </a>
 
   <div class="scroll-flecha">↓</div>
 </section>
@@ -136,9 +131,26 @@
     <div id="grid-productos" class="grid-productos"></div>
   </section>
 
-  <section id="nosotros" class="nosotros revelar">
-    <h2>Sobre D&amp;M Dosis de Moda</h2>
-    <p>Somos una tienda dedicada a vestir a cada mujer con carteras únicas, coloridas y llenas de estilo. Cada modelo está pensado para acompañar tu día a día con actitud.</p>
+  <section class="cuidado revelar">
+    <h2>Cómo cuidar tu cartera</h2>
+    <div class="cuidado-grid">
+      <div class="cuidado-tip">
+        <span class="cuidado-icono">🧴</span>
+        <p>Limpiá con un paño suave y húmedo; evitá productos con alcohol o químicos fuertes.</p>
+      </div>
+      <div class="cuidado-tip">
+        <span class="cuidado-icono">☔</span>
+        <p>Protegé tu cartera de la lluvia y la humedad excesiva — el agua puede dañar el cuero y los herrajes.</p>
+      </div>
+      <div class="cuidado-tip">
+        <span class="cuidado-icono">📦</span>
+        <p>Guardala rellena (con papel o tela) en un lugar seco, lejos del sol directo, para que mantenga su forma.</p>
+      </div>
+      <div class="cuidado-tip">
+        <span class="cuidado-icono">✨</span>
+        <p>Dejá que se airee entre usos y evitá sobrecargarla de peso para cuidar las costuras y correas.</p>
+      </div>
+    </div>
   </section>
 
   <section class="testimonios revelar">
@@ -320,7 +332,10 @@
     <h3 id="detalle-nombre"></h3>
     <p id="detalle-precio" class="precio"></p>
     <p class="modal-detalle-descripcion">Cartera para dama, ideal para el día a día. Interior amplio, cierre seguro y acabados cuidados en cada detalle.</p>
-    <button id="detalle-btn-agregar" class="btn-agregar">Agregar al carrito</button>
+    <div class="modal-detalle-acciones">
+      <button id="detalle-btn-agregar" class="btn-agregar">Agregar al carrito</button>
+      <a id="detalle-btn-compartir" href="#" class="btn-compartir-detalle" target="_blank" rel="noopener" aria-label="Compartir por WhatsApp"></a>
+    </div>
     <div id="detalle-relacionados" class="detalle-relacionados"></div>
   </div>
 </div>

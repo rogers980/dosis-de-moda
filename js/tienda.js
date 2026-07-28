@@ -11,6 +11,22 @@ function guardarFavoritos() {
   localStorage.setItem("favoritos", JSON.stringify(favoritos));
 }
 
+// --- Modo oscuro, guardado en localStorage ---
+function aplicarModoOscuro(activo) {
+  document.body.classList.toggle("oscuro", activo);
+  const boton = document.getElementById("btn-modo-oscuro");
+  if (boton) {
+    boton.setAttribute("aria-pressed", String(activo));
+    boton.setAttribute("aria-label", activo ? "Cambiar a modo claro" : "Cambiar a modo oscuro");
+  }
+}
+
+function alternarModoOscuro() {
+  const activo = !document.body.classList.contains("oscuro");
+  localStorage.setItem("modoOscuro", activo ? "1" : "0");
+  aplicarModoOscuro(activo);
+}
+
 function alternarFavorito(id) {
   const indice = favoritos.indexOf(id);
   if (indice === -1) {
@@ -27,6 +43,14 @@ function guardarCarrito() {
 
 function formatearPrecio(valor) {
   return "$" + valor.toFixed(2);
+}
+
+// --- Compartir un producto por WhatsApp ---
+const SVG_WHATSAPP = `<svg viewBox="0 0 32 32" width="16" height="16" fill="currentColor"><path d="M16.004 3C9.376 3 4 8.373 4 15c0 2.278.633 4.41 1.732 6.227L4 29l7.938-1.7A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm0 21.818c-1.94 0-3.75-.57-5.27-1.55l-.378-.24-4.71 1.01 1.02-4.59-.25-.39A9.77 9.77 0 0 1 5.2 15c0-5.96 4.85-10.818 10.804-10.818 5.955 0 10.804 4.858 10.804 10.818 0 5.96-4.85 10.818-10.804 10.818zm5.94-8.1c-.324-.163-1.918-.946-2.215-1.054-.297-.108-.513-.163-.729.163-.216.325-.837 1.054-1.026 1.271-.19.216-.378.244-.702.081-.324-.163-1.367-.503-2.604-1.606-.963-.858-1.613-1.918-1.802-2.243-.19-.325-.02-.5.143-.663.146-.146.324-.38.486-.57.162-.19.216-.325.324-.542.108-.216.054-.406-.027-.57-.081-.163-.729-1.755-.999-2.404-.263-.632-.53-.546-.729-.556l-.62-.011c-.216 0-.567.081-.864.406-.297.325-1.134 1.108-1.134 2.702s1.161 3.134 1.323 3.35c.162.216 2.286 3.49 5.539 4.895.774.334 1.377.534 1.848.684.776.247 1.482.212 2.04.129.622-.093 1.918-.784 2.19-1.54.27-.758.27-1.407.19-1.54-.081-.135-.297-.216-.621-.379z"/></svg>`;
+
+function enlaceCompartir(producto) {
+  const mensaje = encodeURIComponent(`Mirá esta cartera de D&M Dosis de Moda 😍\n${producto.nombre} — ${formatearPrecio(producto.precio)}`);
+  return `https://wa.me/?text=${mensaje}`;
 }
 
 // --- Accesibilidad: trampa de foco para paneles/modales tipo diálogo ---
@@ -103,7 +127,7 @@ const IMAGENES_CATEGORIA = {
   clutch: "img/reales/cartera-real-7.jpg",
   tote: "img/reales/cartera-real-32.jpg",
   bucket: "img/reales/cartera-real-40.jpg",
-  mini: "img/reales/cartera-real-51.jpg",
+  mini: "img/reales/cartera-real-46.jpg",
 };
 
 let categoriaActiva = "todas";
@@ -176,6 +200,7 @@ function renderizarProductos() {
       <div class="tarjeta-imagen" data-id="${producto.id}">
         ${producto.nuevo ? '<span class="insignia-nuevo">Nuevo</span>' : producto.masVendido ? '<span class="insignia-vendido">🔥 Más Vendido</span>' : ""}
         <button class="btn-favorito ${esFavorito ? "activo" : ""}" data-id="${producto.id}" aria-label="Marcar como favorito">${esFavorito ? "❤️" : "🤍"}</button>
+        <a href="${enlaceCompartir(producto)}" class="btn-compartir" target="_blank" rel="noopener" aria-label="Compartir por WhatsApp" onclick="event.stopPropagation()">${SVG_WHATSAPP}</a>
         <span class="tarjeta-brillo"></span>
         ${etiquetaImagen(producto.img, producto.nombre, 'loading="lazy"')}
       </div>
@@ -389,6 +414,10 @@ function abrirDetalleProducto(id) {
     animarIconoCarrito();
     lanzarConfeti(e.clientX, e.clientY);
   };
+
+  const btnCompartir = document.getElementById("detalle-btn-compartir");
+  btnCompartir.href = enlaceCompartir(producto);
+  btnCompartir.innerHTML = SVG_WHATSAPP;
 
   guardarVisto(id);
   renderizarRelacionados(producto);
@@ -686,6 +715,10 @@ document.querySelectorAll("[data-info]").forEach((enlace) => {
 
 document.getElementById("btn-cerrar-info").addEventListener("click", cerrarInfo);
 document.getElementById("overlay-info").addEventListener("click", cerrarInfo);
+
+// --- Conectar el modo oscuro ---
+aplicarModoOscuro(localStorage.getItem("modoOscuro") === "1");
+document.getElementById("btn-modo-oscuro").addEventListener("click", alternarModoOscuro);
 
 // --- Conectar los botones fijos de la página ---
 document.getElementById("btn-carrito").addEventListener("click", abrirCarrito);
