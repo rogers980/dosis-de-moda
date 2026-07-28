@@ -576,17 +576,18 @@ body.oscuro .btn-modo-oscuro .icono-luna {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
+  width: 66px;
+  height: 66px;
   margin: 0 auto 18px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--rosa), var(--morado));
   color: #fff;
+  box-shadow: 0 8px 18px rgba(123,47,247,0.25);
 }
 
 .beneficio-icono svg {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
 }
 
 .beneficio h3 {
