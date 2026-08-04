@@ -613,7 +613,7 @@ body.oscuro .btn-modo-oscuro .icono-luna {
   border-radius: 50%;
   background: var(--dorado);
   color: #2a2438;
-  box-shadow: var(--shadow-3, 0 8px 18px rgba(123,47,247,0.25));
+  box-shadow: 0 8px 18px rgba(123,47,247,0.25);
 }
 
 .beneficio-icono svg {
@@ -797,7 +797,165 @@ body.oscuro .btn-limpiar-buscador {
 }
 
 .burbuja-categoria.activo .burbuja-etiqueta {
-  color: #d6316f; /* rosa oscurecido: 3.13:1 sobre blanco fallaba AA, este da 4.6:1 */
+  color: #c0245c; /* rosa oscurecido: contra el fondo real #fff8fb da 5.5:1 (el anterior daba 4.43:1 y fallaba AA) */
+}
+
+.swatches-variante {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 6px 0 12px;
+}
+
+.swatch-variante {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+.swatch-variante.activo {
+  border-color: var(--morado);
+  box-shadow: 0 0 0 2px #fff inset, 0 0 0 2px var(--morado);
+}
+
+.swatches-decorativas .swatch-variante {
+  cursor: default;
+  pointer-events: none;
+}
+
+.filtros-color {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 20px;
+}
+
+.swatch-color {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: transform 0.15s;
+}
+
+.swatch-color:hover {
+  transform: scale(1.12);
+}
+
+.swatch-color.swatch-borde {
+  border-color: #e3ddec;
+}
+
+.swatch-color.activo {
+  border-color: var(--morado);
+  box-shadow: 0 0 0 3px #fff inset, 0 0 0 2px var(--morado);
+}
+
+.swatch-color.activo::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.swatch-color.swatch-borde.activo::after {
+  color: #2a2438;
+  text-shadow: none;
+}
+
+.barra-filtros-extra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: -12px 0 20px;
+}
+
+.filtro-precio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a4356;
+}
+
+.filtro-precio-label select {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.5px solid #e3ddec;
+  font-family: inherit;
+  font-size: 0.85rem;
+  background: #fff;
+  color: #2a2438;
+}
+
+.switch-mayorista {
+  display: inline-flex;
+  border-radius: 999px;
+  background: #f2ecf8;
+  padding: 4px;
+  gap: 4px;
+}
+
+.switch-opcion {
+  border: none;
+  background: transparent;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #6b6373;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.switch-opcion.activo {
+  background: #fff;
+  color: var(--morado);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.switch-nota {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--dorado);
+  background: #2a2438;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+body.oscuro .filtro-precio-label select {
+  background: #2a2438;
+  border-color: #3d3550;
+  color: #f1eef7;
+}
+
+body.oscuro .switch-mayorista {
+  background: #2a2438;
+}
+
+body.oscuro .switch-opcion.activo {
+  background: #3d3550;
+  color: #d9b8ff;
 }
 
 .contador-resultados {
@@ -1042,6 +1200,12 @@ body.oscuro .btn-limpiar-buscador {
   padding-bottom: 20px;
   border: 1px solid rgba(123,47,247,0.06);
   transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.tarjeta-producto .btn-agregar {
+  margin-top: auto;
 }
 
 .tarjeta-producto:hover {
@@ -1250,7 +1414,7 @@ body.oscuro .btn-limpiar-buscador {
   top: 12px;
   left: 12px;
   z-index: 2;
-  background: linear-gradient(135deg, var(--rosa), var(--morado));
+  background: var(--morado);
   color: #fff;
   font-size: 0.68rem;
   font-weight: 800;
@@ -1267,6 +1431,10 @@ body.oscuro .btn-limpiar-buscador {
   font-weight: 700;
   color: var(--oscuro);
   line-height: 1.35;
+  min-height: calc(1.35em * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .precio {
@@ -1302,7 +1470,7 @@ body.oscuro .btn-limpiar-buscador {
 
 .btn-agregar {
   border: none;
-  background: linear-gradient(135deg, var(--morado), var(--rosa));
+  background: var(--morado);
   color: #fff;
   font-weight: 700;
   font-size: 0.82rem;
@@ -2068,7 +2236,7 @@ body.oscuro .colecciones-subtitulo {
   font-size: 1.3rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: var(--shadow-4, 0 6px 18px rgba(0,0,0,0.25));
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
   z-index: 80;
   opacity: 0;
   pointer-events: none;

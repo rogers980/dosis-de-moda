@@ -139,6 +139,59 @@ let soloFavoritos = false;
 let textoBusqueda = "";
 let filtroLinea = null;
 let mapaStock = {};
+let filtroPrecio = null; // {min, max} o null
+
+// Colores reales por producto (usado por el swatch de variante en la tarjeta, no como filtro global)
+const HEX_COLOR = {
+  negro: "#1c1a1f",
+  blanco: "#f7f5f2",
+  beige: "#d9c8a9",
+  café: "#6b4a2f",
+  gris: "#9a94a3",
+  rojo: "#dc2626",
+  vino: "#7c1f3a",
+  rosa: "#f472b6",
+  naranja: "#f97316",
+  dorado: "#c9973a",
+  amarillo: "#eab308",
+  verde: "#4d7c3a",
+  azul: "#2563eb",
+  morado: "#7b2ff7",
+  multicolor: "conic-gradient(from 0deg, #f472b6, #f97316, #eab308, #4d7c3a, #2563eb, #7b2ff7, #f472b6)",
+};
+let modoMayor = localStorage.getItem("modoMayor") === "1";
+
+// --- Precio de mayor: 20% de descuento, aplica desde 6 unidades por pedido ---
+const DESCUENTO_MAYOR = 0.2;
+const MINIMO_UNIDADES_MAYOR = 6;
+
+function precioEfectivo(producto) {
+  return modoMayor ? Math.round(producto.precio * (1 - DESCUENTO_MAYOR) * 100) / 100 : producto.precio;
+}
+
+// Puntitos de color puramente visuales (mockup) para productos sin variantes reales todavía.
+// No hacen nada al clic — el color real de la cartera + 3 de relleno, solo para mostrar la idea
+// hasta que haya inventario y fotos reales de cada color (ver id 10 para la versión funcional).
+const RELLENO_COLORES = ["negro", "beige", "café", "gris", "rojo"];
+function htmlSwatchesDecorativos(producto) {
+  const relleno = RELLENO_COLORES.filter((c) => c !== producto.color).slice(0, 4);
+  const colores = [producto.color, ...relleno];
+  return `<div class="swatches-variante swatches-decorativas">${colores
+    .map(
+      (c, i) =>
+        `<span class="swatch-variante ${i === 0 ? "activo" : ""}" style="background:${HEX_COLOR[c] || "#ccc"}" title="${c[0].toUpperCase() + c.slice(1)}"></span>`
+    )
+    .join("")}</div>`;
+}
+
+function htmlPrecio(producto) {
+  if (modoMayor) {
+    return `<p class="precio-oferta"><span class="precio-antes">${formatearPrecio(producto.precio)}</span><span class="precio">${formatearPrecio(precioEfectivo(producto))}</span></p>`;
+  }
+  return producto.precioAntes
+    ? `<p class="precio-oferta"><span class="precio-antes">${formatearPrecio(producto.precioAntes)}</span><span class="precio">${formatearPrecio(producto.precio)}</span></p>`
+    : `<p class="precio">${formatearPrecio(producto.precio)}</p>`;
+}
 
 // --- WebP con fallback a JPG (mismo nombre, misma carpeta) ---
 function rutaWebp(rutaJpg) {
@@ -256,6 +309,51 @@ function configurarBuscador() {
   });
 }
 
+// --- Filtro de precio (dropdown de rangos) ---
+function configurarFiltroPrecio() {
+  const select = document.getElementById("filtro-precio");
+  if (!select) return;
+  select.addEventListener("change", () => {
+    if (!select.value) {
+      filtroPrecio = null;
+    } else {
+      const [min, max] = select.value.split("-").map(Number);
+      filtroPrecio = { min, max };
+    }
+    renderizarProductos();
+  });
+}
+
+// --- Switch de precio Detal / Mayor (20% desde MINIMO_UNIDADES_MAYOR unidades) ---
+function configurarSwitchMayorista() {
+  const btnDetal = document.getElementById("btn-precio-detal");
+  const btnMayor = document.getElementById("btn-precio-mayor");
+  if (!btnDetal || !btnMayor) return;
+
+  function pintarSwitch() {
+    btnDetal.classList.toggle("activo", !modoMayor);
+    btnDetal.setAttribute("aria-pressed", String(!modoMayor));
+    btnMayor.classList.toggle("activo", modoMayor);
+    btnMayor.setAttribute("aria-pressed", String(modoMayor));
+  }
+
+  btnDetal.addEventListener("click", () => {
+    modoMayor = false;
+    localStorage.setItem("modoMayor", "0");
+    pintarSwitch();
+    renderizarProductos();
+  });
+
+  btnMayor.addEventListener("click", () => {
+    modoMayor = true;
+    localStorage.setItem("modoMayor", "1");
+    pintarSwitch();
+    renderizarProductos();
+  });
+
+  pintarSwitch();
+}
+
 // --- Pintar el catálogo de productos ---
 function renderizarProductos() {
   const grid = document.getElementById("grid-productos");
@@ -278,6 +376,12 @@ function renderizarProductos() {
   const busqueda = textoBusqueda.trim().toLowerCase();
   if (busqueda) {
     productosFiltrados = productosFiltrados.filter((p) => p.nombre.toLowerCase().includes(busqueda));
+  }
+
+  if (filtroPrecio) {
+    productosFiltrados = productosFiltrados.filter(
+      (p) => p.precio >= filtroPrecio.min && p.precio < filtroPrecio.max
+    );
   }
 
   const contadorResultados = document.getElementById("contador-resultados");
@@ -321,10 +425,16 @@ function renderizarProductos() {
         ${etiquetaImagen(producto.img, producto.nombre, 'loading="lazy"')}
       </div>
       <h3 data-id="${producto.id}">${producto.nombre}</h3>
+      ${htmlPrecio(producto)}
       ${
-        producto.precioAntes
-          ? `<p class="precio-oferta"><span class="precio-antes">${formatearPrecio(producto.precioAntes)}</span><span class="precio">${formatearPrecio(producto.precio)}</span></p>`
-          : `<p class="precio">${formatearPrecio(producto.precio)}</p>`
+        producto.variantes
+          ? `<div class="swatches-variante" data-id="${producto.id}">${producto.variantes
+              .map(
+                (v, i) =>
+                  `<button type="button" class="swatch-variante ${i === 0 ? "activo" : ""}" data-color="${v.color}" style="background:${HEX_COLOR[v.color] || "#ccc"}" aria-label="Ver en ${v.color}" title="${v.color[0].toUpperCase() + v.color.slice(1)}"></button>`
+              )
+              .join("")}</div>`
+          : htmlSwatchesDecorativos(producto)
       }
       <button class="btn-agregar" data-id="${producto.id}" ${agotado ? "disabled" : ""}>${agotado ? "Agotado" : "Agregar al carrito"}</button>
     `;
@@ -338,6 +448,22 @@ function renderizarProductos() {
     } else {
       img.addEventListener("load", () => imagenContenedor.classList.add("cargada"), { once: true });
       img.addEventListener("error", () => imagenContenedor.classList.add("cargada"), { once: true });
+    }
+
+    if (producto.variantes) {
+      tarjeta.querySelectorAll(".swatch-variante").forEach((swatch) => {
+        swatch.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const variante = producto.variantes.find((v) => v.color === swatch.dataset.color);
+          if (!variante) return;
+          const source = tarjeta.querySelector(".tarjeta-imagen picture source");
+          const imgEl = tarjeta.querySelector(".tarjeta-imagen picture img");
+          source.srcset = rutaWebp(variante.img);
+          imgEl.src = variante.img;
+          tarjeta.querySelectorAll(".swatch-variante").forEach((s) => s.classList.remove("activo"));
+          swatch.classList.add("activo");
+        });
+      });
     }
   });
 
@@ -505,7 +631,9 @@ function abrirDetalleProducto(id) {
 
   document.getElementById("detalle-img").alt = producto.nombre;
   document.getElementById("detalle-nombre").textContent = producto.nombre;
-  document.getElementById("detalle-precio").innerHTML = producto.precioAntes
+  document.getElementById("detalle-precio").innerHTML = modoMayor
+    ? `<span class="precio-antes">${formatearPrecio(producto.precio)}</span> ${formatearPrecio(precioEfectivo(producto))}`
+    : producto.precioAntes
     ? `<span class="precio-antes">${formatearPrecio(producto.precioAntes)}</span> ${formatearPrecio(producto.precio)}`
     : formatearPrecio(producto.precio);
   document.getElementById("detalle-categoria").textContent = NOMBRES_CATEGORIA[producto.categoria] || producto.categoria;
@@ -615,7 +743,7 @@ function agregarAlCarrito(id) {
   if (itemExistente) {
     itemExistente.cantidad++;
   } else {
-    carrito.push({ id: producto.id, nombre: producto.nombre, precio: producto.precio, cantidad: 1 });
+    carrito.push({ id: producto.id, nombre: producto.nombre, precio: precioEfectivo(producto), cantidad: 1, mayor: modoMayor });
   }
 
   guardarCarrito();
@@ -724,23 +852,61 @@ function cerrarMenu() {
 }
 
 // --- Checkout por WhatsApp (pasa primero por el registro de datos del cliente) ---
+function unidadesMayorEnCarrito() {
+  return carrito.filter((item) => item.mayor).reduce((suma, item) => suma + item.cantidad, 0);
+}
+
 function finalizarCompra() {
   if (carrito.length === 0) {
     alert("Tu carrito está vacío. Agrega alguna cartera antes de finalizar la compra.");
     return;
   }
+
+  const unidadesMayor = unidadesMayorEnCarrito();
+  if (unidadesMayor > 0 && unidadesMayor < MINIMO_UNIDADES_MAYOR) {
+    const continuar = confirm(
+      `Llevás ${unidadesMayor} unidad${unidadesMayor === 1 ? "" : "es"} con precio de mayor, pero el mínimo es ${MINIMO_UNIDADES_MAYOR}. ` +
+      `El precio de mayor todavía no aplica — se ajustará al confirmar por WhatsApp. ¿Continuar de todas formas?`
+    );
+    if (!continuar) return;
+  }
+
   abrirModalRegistro();
+}
+
+// Precio real a mostrar en el mensaje: si el pedido quedó marcado "mayor" pero no llegó
+// al mínimo de unidades, el 20% que se guardó en el carrito NO es válido — hay que
+// recalcular con el precio de lista (producto.precio), nunca mandar el descontado sin avisar.
+function precioCorregidoParaMensaje(item, mayorAplica) {
+  if (item.mayor && !mayorAplica) {
+    const producto = productos.find((p) => p.id === item.id);
+    return producto ? producto.precio : item.precio;
+  }
+  return item.precio;
 }
 
 function construirMensajeCompra(datosCliente) {
   const metodoPago = document.querySelector('input[name="metodo-pago"]:checked');
   const courier = document.querySelector('input[name="courier"]:checked');
+  const unidadesMayor = unidadesMayorEnCarrito();
+  const mayorAplica = unidadesMayor >= MINIMO_UNIDADES_MAYOR;
 
+  let totalCorregido = 0;
   let mensaje = "¡Hola! Quiero comprar estas carteras:%0A%0A";
   carrito.forEach((item) => {
-    mensaje += `• ${item.nombre} x${item.cantidad} — ${formatearPrecio(item.precio * item.cantidad)}%0A`;
+    const precioReal = precioCorregidoParaMensaje(item, mayorAplica);
+    totalCorregido += precioReal * item.cantidad;
+    const etiquetaMayor = item.mayor ? (mayorAplica ? " (precio mayor)" : " (precio de lista, no llegó al mínimo de mayor)") : "";
+    mensaje += `• ${item.nombre} x${item.cantidad} — ${formatearPrecio(precioReal * item.cantidad)}${encodeURIComponent(etiquetaMayor)}%0A`;
   });
-  mensaje += `%0ATotal: ${formatearPrecio(calcularTotal())}`;
+  mensaje += `%0ATotal: ${formatearPrecio(totalCorregido)}`;
+  if (unidadesMayor > 0) {
+    mensaje += `%0A${encodeURIComponent(
+      mayorAplica
+        ? `✅ Pedido de mayor (${unidadesMayor} und., -20%)`
+        : `⚠️ Pedido marcado como mayor pero solo ${unidadesMayor} und. (mínimo ${MINIMO_UNIDADES_MAYOR}) — confirmar precio final`
+    )}`;
+  }
   if (metodoPago) mensaje += `%0AMétodo de pago: ${encodeURIComponent(metodoPago.value)}`;
   if (courier) mensaje += `%0AEnvío por: ${encodeURIComponent(courier.value)}`;
   mensaje += `%0A%0ANombre: ${encodeURIComponent(datosCliente.nombre)}`;
@@ -840,7 +1006,8 @@ const INFO_CONTENIDO = {
   "privacidad": {
     titulo: "Política de privacidad",
     cuerpo: `
-      <p>Tus datos (nombre, teléfono, dirección de envío) solo se usan para procesar tu pedido y coordinar el envío — no se comparten con terceros ni se usan para otro fin.</p>
+      <p>Tus datos (nombre, teléfono y ciudad) se piden al finalizar la compra para coordinar tu pedido y tu envío. Se guardan en nuestra base de datos interna (Supabase) y solo el equipo de D&M Dosis de Moda puede acceder a ellos — nunca se comparten ni se venden a terceros.</p>
+      <p>Si aceptaste el aviso de cookies, también usamos Google Analytics para entender qué carteras se ven más y mejorar la tienda — podés rechazarlo desde el banner de cookies en cualquier momento.</p>
       <p>La comunicación se maneja directamente por WhatsApp con Roger Soto, dueño de D&M Dosis de Moda.</p>
     `,
   },
@@ -1014,7 +1181,7 @@ function iniciarDestacados() {
     const producto = destacados[indice];
     document.getElementById("destacado-img").src = producto.img;
     document.getElementById("destacado-nombre").textContent = producto.nombre;
-    document.getElementById("destacado-precio").textContent = formatearPrecio(producto.precio);
+    document.getElementById("destacado-precio").textContent = formatearPrecio(precioEfectivo(producto));
   }
 
   pintar();
@@ -1033,6 +1200,8 @@ function iniciarDestacados() {
 renderizarLineas();
 renderizarFiltros();
 configurarBuscador();
+configurarFiltroPrecio();
+configurarSwitchMayorista();
 renderizarProductos();
 renderizarCarrito();
 renderizarVistos();

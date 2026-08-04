@@ -19,9 +19,9 @@
 <meta name="twitter:image" content="https://rogers980.github.io/dosis-de-moda/img/social-card.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://unpkg.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<!-- Open Props: variables CSS de sombras/curvas de animación con calidad de diseño real, sin build tool -->
-<link rel="stylesheet" href="https://unpkg.com/open-props">
 <link rel="stylesheet" href="css/estilo.css">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ff4d8d">
@@ -171,6 +171,27 @@
       <button id="btn-limpiar-buscador" class="btn-limpiar-buscador" type="button" aria-label="Limpiar búsqueda" hidden>✕</button>
     </div>
     <div id="filtros-categoria" class="filtros-categoria"></div>
+    <div class="barra-filtros-extra">
+      <label class="filtro-precio-label" for="filtro-precio">
+        <span>Precio</span>
+        <select id="filtro-precio" aria-label="Filtrar por rango de precio">
+          <option value="">Todos los precios</option>
+          <option value="0-5">$0 – $5</option>
+          <option value="5-10">$5 – $10</option>
+          <option value="10-15">$10 – $15</option>
+          <option value="15-20">$15 – $20</option>
+          <option value="20-25">$20 – $25</option>
+          <option value="25-30">$25 – $30</option>
+          <option value="30-35">$30 – $35</option>
+          <option value="35-40">$35 – $40</option>
+          <option value="40-999">Más de $40</option>
+        </select>
+      </label>
+      <div class="switch-mayorista" role="group" aria-label="Tipo de precio">
+        <button type="button" id="btn-precio-detal" class="switch-opcion activo" aria-pressed="true">Detal</button>
+        <button type="button" id="btn-precio-mayor" class="switch-opcion" aria-pressed="false">Mayor <span class="switch-nota">-20% desde 6 und.</span></button>
+      </div>
+    </div>
     <p id="contador-resultados" class="contador-resultados"></p>
     <div id="vistos-recientemente" class="vistos-recientemente" hidden>
       <p class="vistos-titulo">Vistos recientemente</p>
@@ -429,6 +450,7 @@
     <input type="text" id="registro-ciudad" name="ciudad" required autocomplete="address-level2">
 
     <button type="submit" class="btn-checkout">Continuar por WhatsApp</button>
+    <p class="aviso-privacidad-registro">Tus datos (nombre, teléfono y ciudad) se usan solo para coordinar tu pedido y tu envío. Se guardan en nuestra base interna y únicamente el equipo de D&amp;M Dosis de Moda puede acceder a ellos — nunca se comparten ni se venden a terceros.</p>
   </form>
 </div>
 
