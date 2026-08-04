@@ -69,10 +69,15 @@ async function confirmarVenta(id) {
   if (!pin) pin = pedirPin();
   if (!pin) return;
 
-  const { error } = await clientePanel.rpc("confirmar_venta", { p_id: id, p_pin: pin });
+  const { data, error } = await clientePanel.rpc("confirmar_venta", { p_id: id, p_pin: pin });
   if (error) {
     olvidarPin();
-    alert("No se pudo confirmar (¿PIN incorrecto?): " + error.message);
+    alert("No se pudo confirmar: " + error.message);
+    return;
+  }
+  if (data === -1) {
+    olvidarPin();
+    alert("PIN incorrecto.");
     return;
   }
   cargarPanel();
@@ -83,10 +88,15 @@ async function reponerStock(id, cantidad) {
   if (!pin) pin = pedirPin();
   if (!pin) return;
 
-  const { error } = await clientePanel.rpc("reponer_stock", { p_id: id, p_pin: pin, p_cantidad: cantidad });
+  const { data, error } = await clientePanel.rpc("reponer_stock", { p_id: id, p_pin: pin, p_cantidad: cantidad });
   if (error) {
     olvidarPin();
-    alert("No se pudo guardar (¿PIN incorrecto?): " + error.message);
+    alert("No se pudo guardar: " + error.message);
+    return;
+  }
+  if (data === -1) {
+    olvidarPin();
+    alert("PIN incorrecto.");
     return;
   }
   cargarPanel();

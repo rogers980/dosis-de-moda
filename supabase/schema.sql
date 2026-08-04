@@ -139,7 +139,7 @@ begin
 
   if pin_ok is not true then
     insert into intentos_pin (ip) values (v_ip);
-    raise exception 'PIN incorrecto';
+    return -1;
   end if;
 
   delete from intentos_pin where ip = v_ip;
@@ -178,7 +178,7 @@ begin
 
   if pin_ok is not true then
     insert into intentos_pin (ip) values (v_ip);
-    raise exception 'PIN incorrecto';
+    return -1;
   end if;
 
   delete from intentos_pin where ip = v_ip;
