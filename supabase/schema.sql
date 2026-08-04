@@ -13,6 +13,28 @@ create table if not exists stock (
 
 alter table stock enable row level security;
 
+-- Clientes que dejan sus datos al finalizar una compra por WhatsApp
+-- (nombre, teléfono, ciudad). Solo INSERT público — nadie puede LEER esta
+-- tabla con la clave pública, ni el propio sitio: solo se ve desde el
+-- Table Editor de Supabase con tu cuenta (para eso no hace falta policy
+-- de SELECT, tu login de Supabase no pasa por RLS).
+create table if not exists clientes (
+  id bigint generated always as identity primary key,
+  nombre text not null,
+  telefono text not null,
+  ciudad text not null,
+  creado_en timestamptz not null default now()
+);
+
+alter table clientes enable row level security;
+
+create policy "cualquiera puede registrarse como cliente"
+  on clientes for insert
+  with check (true);
+
+-- Sin policy de SELECT/UPDATE/DELETE: nadie puede leer ni modificar
+-- la lista de clientes con la clave pública, solo agregar una fila nueva.
+
 -- Cualquier visitante puede LEER el stock (para mostrar "quedan X" en el sitio)
 create policy "lectura publica de stock"
   on stock for select
