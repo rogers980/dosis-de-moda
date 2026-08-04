@@ -347,6 +347,10 @@ function configurarSwitchMayorista() {
   btnMayor.addEventListener("click", () => {
     modoMayor = true;
     localStorage.setItem("modoMayor", "1");
+    gtag("event", "mayorista_activado", {
+      minimo_unidades: MINIMO_UNIDADES_MAYOR,
+      descuento: DESCUENTO_MAYOR,
+    });
     pintarSwitch();
     renderizarProductos();
   });
@@ -746,6 +750,13 @@ function agregarAlCarrito(id) {
     carrito.push({ id: producto.id, nombre: producto.nombre, precio: precioEfectivo(producto), cantidad: 1, mayor: modoMayor });
   }
 
+  gtag("event", "add_to_cart", {
+    item_id: producto.id,
+    nombre: producto.nombre,
+    precio: precioEfectivo(producto),
+    cantidad: itemExistente ? itemExistente.cantidad : 1,
+  });
+
   guardarCarrito();
   renderizarCarrito();
 }
@@ -934,6 +945,17 @@ async function registrarClienteYContinuar(datosCliente) {
 
   const mensaje = construirMensajeCompra(datosCliente);
   const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`;
+
+  // Evento manual: Enhanced Measurement de GA4 NO detecta window.open(), así que
+  // sin este evento manual esta conversión (el lead real: cliente abriendo WhatsApp
+  // para comprar) sería invisible en los reportes.
+  gtag("event", "whatsapp_lead", {
+    value: calcularTotal(),
+    currency: "USD",
+    items_count: carrito.reduce((total, item) => total + item.cantidad, 0),
+    ciudad: datosCliente.ciudad,
+  });
+
   window.open(url, "_blank");
 }
 

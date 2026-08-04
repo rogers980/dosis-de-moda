@@ -91,3 +91,66 @@ crearParticulas();
 activarTiltLogo();
 iniciarRevelados();
 activarBotonArriba();
+
+// --- GSAP + ScrollTrigger: las imágenes del catálogo se "expanden" suavemente ---
+// al entrar en el viewport (scale 0.92 -> 1, scrub con el scroll). Efecto puramente
+// visual, separado del resto de este archivo para no mezclarlo con tienda.js.
+//
+// El grid de productos (#grid-productos) se reconstruye por completo con
+// innerHTML="" cada vez que cambia un filtro, la búsqueda o el switch mayorista
+// (ver tienda.js -> renderizarProductos()). Por eso usamos un MutationObserver en
+// vez de correr esto una sola vez al cargar la página: así detectamos cada
+// repintado del grid sin tener que modificar tienda.js.
+(function () {
+  const prefiereMenosMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefiereMenosMovimiento) return; // el usuario pidió menos animación: no tocamos nada, imágenes normales y quietas.
+
+  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return; // si el CDN no cargó, no rompemos nada.
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Animamos el contenedor ".tarjeta-imagen" (no el <img> directamente): así no
+  // pisamos la transición CSS del zoom al hacer :hover sobre la imagen
+  // (.tarjeta-producto:hover .tarjeta-imagen img { transform: scale(1.12) }),
+  // ni tocamos el layout flex-column de .tarjeta-producto (el botón sigue
+  // alineado con margin-top:auto — transform no afecta el flujo del documento).
+  let triggersActivosCatalogo = [];
+
+  function animarImagenesCatalogo() {
+    triggersActivosCatalogo.forEach((st) => st.kill());
+    triggersActivosCatalogo = [];
+
+    document.querySelectorAll("#grid-productos .tarjeta-imagen").forEach((contenedor) => {
+      gsap.set(contenedor, { scale: 0.92, transformOrigin: "50% 50%" });
+
+      const tween = gsap.to(contenedor, {
+        scale: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: contenedor,
+          start: "top 88%",
+          end: "top 55%",
+          scrub: true,
+        },
+      });
+
+      if (tween.scrollTrigger) triggersActivosCatalogo.push(tween.scrollTrigger);
+    });
+  }
+
+  const gridProductos = document.getElementById("grid-productos");
+  if (!gridProductos) return;
+
+  let reprogramado = null;
+  const observadorGrid = new MutationObserver(() => {
+    clearTimeout(reprogramado);
+    reprogramado = setTimeout(() => {
+      animarImagenesCatalogo();
+      ScrollTrigger.refresh();
+    }, 50);
+  });
+  observadorGrid.observe(gridProductos, { childList: true });
+
+  // Por si el grid ya tuviera contenido al momento de correr este script.
+  animarImagenesCatalogo();
+})();
