@@ -124,7 +124,7 @@ create or replace function confirmar_venta(p_id integer, p_pin text)
 returns integer
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   pin_ok boolean;
@@ -163,7 +163,7 @@ create or replace function reponer_stock(p_id integer, p_pin text, p_cantidad in
 returns integer
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   pin_ok boolean;
