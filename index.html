@@ -20,9 +20,26 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- Open Props: variables CSS de sombras/curvas de animación con calidad de diseño real, sin build tool -->
+<link rel="stylesheet" href="https://unpkg.com/open-props">
 <link rel="stylesheet" href="css/estilo.css">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ff4d8d">
+
+<!-- Google Analytics (GA4) — pedido a consentimiento (banner de cookies en js/cookies.js) -->
+<!-- Reemplazá G-TU_ID_AQUI por tu Measurement ID real: analytics.google.com → Administrar →
+     Flujos de datos → tu sitio → arriba a la derecha (formato G-XXXXXXXXXX). No lo compartas con Claude. -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  // Por defecto NO se guarda nada hasta que el visitante acepte el banner.
+  gtag('consent', 'default', { 'analytics_storage': 'denied' });
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TU_ID_AQUI"></script>
+<script>
+  gtag('js', new Date());
+  gtag('config', 'G-TU_ID_AQUI');
+</script>
 </head>
 <body>
 
@@ -342,7 +359,7 @@
     <h2 id="carrito-titulo">Tu carrito</h2>
     <button id="btn-cerrar-carrito" class="btn-cerrar-carrito" aria-label="Cerrar carrito">✕</button>
   </div>
-  <div id="lista-carrito" class="lista-carrito"></div>
+  <div id="lista-carrito" class="lista-carrito" tabindex="0"></div>
   <div class="panel-carrito-footer">
     <fieldset class="carrito-fieldset">
       <legend>Método de pago</legend>
@@ -395,6 +412,26 @@
   </div>
 </div>
 
+<!-- Modal de registro: nombre/teléfono/ciudad antes de finalizar por WhatsApp -->
+<div id="overlay-registro" class="overlay-carrito"></div>
+<div id="modal-registro" class="modal-registro" role="dialog" aria-modal="true" aria-labelledby="registro-titulo">
+  <button type="button" id="btn-cerrar-registro" class="btn-cerrar-detalle" aria-label="Cerrar">✕</button>
+  <h3 id="registro-titulo">Un último paso</h3>
+  <p class="modal-registro-subtitulo">Dejanos tus datos para coordinar tu pedido y tu envío</p>
+  <form id="form-registro" novalidate>
+    <label for="registro-nombre">Nombre</label>
+    <input type="text" id="registro-nombre" name="nombre" required autocomplete="name">
+
+    <label for="registro-telefono">Teléfono</label>
+    <input type="tel" id="registro-telefono" name="telefono" required autocomplete="tel" placeholder="0412-1234567">
+
+    <label for="registro-ciudad">Ciudad</label>
+    <input type="text" id="registro-ciudad" name="ciudad" required autocomplete="address-level2">
+
+    <button type="submit" class="btn-checkout">Continuar por WhatsApp</button>
+  </form>
+</div>
+
 <nav class="nav-inferior" aria-label="Navegación rápida">
   <a href="#catalogo" class="nav-inferior-item">
     <span class="nav-inferior-icono">🛍️</span><span>Catálogo</span>
@@ -417,6 +454,7 @@
 <script src="js/animaciones.js"></script>
 <script src="js/tienda.js"></script>
 <script src="js/chat.js"></script>
+<script src="js/cookies.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="js/stock.js"></script>
 </body>

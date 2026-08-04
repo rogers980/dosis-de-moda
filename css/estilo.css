@@ -230,7 +230,7 @@ body.oscuro .btn-modo-oscuro .icono-luna {
 .hero {
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(-45deg, rgba(123,47,247,0.5), rgba(255,77,141,0.42), rgba(255,138,92,0.5), rgba(123,47,247,0.5)), url("../img/fondo-hero.jpg");
+  background-image: linear-gradient(-45deg, rgba(123,47,247,0.5), rgba(255,77,141,0.42), rgba(255,138,92,0.5), rgba(123,47,247,0.5)), url("../img/fondo-hero.webp");
   background-size: 400% 400%, cover;
   background-position: 0% 50%, center;
   background-blend-mode: normal, normal;
@@ -611,9 +611,9 @@ body.oscuro .btn-modo-oscuro .icono-luna {
   height: 66px;
   margin: 0 auto 18px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--rosa), var(--morado));
-  color: #fff;
-  box-shadow: 0 8px 18px rgba(123,47,247,0.25);
+  background: var(--dorado);
+  color: #2a2438;
+  box-shadow: var(--shadow-3, 0 8px 18px rgba(123,47,247,0.25));
 }
 
 .beneficio-icono svg {
@@ -797,14 +797,14 @@ body.oscuro .btn-limpiar-buscador {
 }
 
 .burbuja-categoria.activo .burbuja-etiqueta {
-  color: var(--rosa);
+  color: #d6316f; /* rosa oscurecido: 3.13:1 sobre blanco fallaba AA, este da 4.6:1 */
 }
 
 .contador-resultados {
   text-align: center;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #8a8094;
+  color: #6b6373; /* gris oscurecido: #8a8094 daba 3.75:1, este da 5.7:1 (AA) */
   margin-bottom: 24px;
 }
 
@@ -966,8 +966,8 @@ body.oscuro .btn-limpiar-buscador {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--rosa), var(--morado));
-  color: #fff;
+  background: var(--dorado);
+  color: #2a2438;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1895,8 +1895,8 @@ body.oscuro .colecciones-subtitulo {
   height: 44px;
   margin-bottom: 12px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--rosa), var(--morado));
-  color: #fff;
+  background: var(--dorado);
+  color: #2a2438;
 }
 
 .cuidado-icono svg {
@@ -2063,12 +2063,12 @@ body.oscuro .colecciones-subtitulo {
   height: 50px;
   border: none;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--rosa), var(--morado));
-  color: #fff;
+  background: var(--dorado);
+  color: #2a2438;
   font-size: 1.3rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  box-shadow: var(--shadow-4, 0 6px 18px rgba(0,0,0,0.25));
   z-index: 80;
   opacity: 0;
   pointer-events: none;
@@ -2599,8 +2599,8 @@ body.oscuro .colecciones-subtitulo {
   height: 58px;
   border: none;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--rosa), var(--morado));
-  color: #fff;
+  background: var(--dorado);
+  color: #2a2438;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2910,4 +2910,152 @@ body.oscuro .creador-texto {
 
 body.oscuro .creador-etiqueta {
   color: #746d82;
+}
+
+/* --- Banner de cookies (aviso de Google Analytics) --- */
+.banner-cookies {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 200;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #2a2438;
+  color: #f1eef7;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+  font-size: 0.92rem;
+}
+
+.banner-cookies p {
+  flex: 1 1 240px;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.banner-cookies-acciones {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-cookies-aceptar,
+.btn-cookies-rechazar {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.btn-cookies-aceptar {
+  background: var(--dorado);
+  color: #2a2438;
+}
+
+.btn-cookies-rechazar {
+  background: transparent;
+  color: #f1eef7;
+  border: 1.5px solid rgba(241,238,247,0.4);
+}
+
+.btn-cookies-aceptar:hover,
+.btn-cookies-rechazar:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 600px) {
+  .banner-cookies {
+    bottom: 78px; /* deja libre el nav-inferior fijo de mobile */
+  }
+}
+
+/* --- Modal de registro (nombre/teléfono/ciudad antes del checkout) --- */
+.modal-registro {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 24px));
+  width: 420px;
+  max-width: 90vw;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.28);
+  padding: 32px 28px 28px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 120;
+}
+
+.modal-registro.abierto {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+}
+
+.modal-registro h3 {
+  margin: 0 0 4px;
+  font-size: 1.3rem;
+  color: var(--morado);
+}
+
+.modal-registro-subtitulo {
+  margin: 0 0 20px;
+  color: #6b6373;
+  font-size: 0.92rem;
+}
+
+.modal-registro form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-registro label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4a4356;
+  margin-top: 8px;
+}
+
+.modal-registro input {
+  padding: 10px 14px;
+  border: 1.5px solid #e3ddec;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.modal-registro input:focus {
+  outline: none;
+  border-color: var(--rosa);
+  box-shadow: 0 0 0 3px rgba(255,77,141,0.15);
+}
+
+.modal-registro .btn-checkout {
+  margin-top: 20px;
+}
+
+body.oscuro .modal-registro {
+  background: #201a2c;
+}
+
+body.oscuro .modal-registro h3 {
+  color: #d9b8ff;
+}
+
+body.oscuro .modal-registro-subtitulo {
+  color: #a89bb8;
+}
+
+body.oscuro .modal-registro input {
+  background: #2a2438;
+  border-color: #3d3550;
+  color: #f1eef7;
 }

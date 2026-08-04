@@ -723,13 +723,16 @@ function cerrarMenu() {
   document.getElementById("btn-menu").setAttribute("aria-expanded", "false");
 }
 
-// --- Checkout por WhatsApp ---
+// --- Checkout por WhatsApp (pasa primero por el registro de datos del cliente) ---
 function finalizarCompra() {
   if (carrito.length === 0) {
     alert("Tu carrito está vacío. Agrega alguna cartera antes de finalizar la compra.");
     return;
   }
+  abrirModalRegistro();
+}
 
+function construirMensajeCompra(datosCliente) {
   const metodoPago = document.querySelector('input[name="metodo-pago"]:checked');
   const courier = document.querySelector('input[name="courier"]:checked');
 
@@ -740,9 +743,47 @@ function finalizarCompra() {
   mensaje += `%0ATotal: ${formatearPrecio(calcularTotal())}`;
   if (metodoPago) mensaje += `%0AMétodo de pago: ${encodeURIComponent(metodoPago.value)}`;
   if (courier) mensaje += `%0AEnvío por: ${encodeURIComponent(courier.value)}`;
+  mensaje += `%0A%0ANombre: ${encodeURIComponent(datosCliente.nombre)}`;
+  mensaje += `%0ATeléfono: ${encodeURIComponent(datosCliente.telefono)}`;
+  mensaje += `%0ACiudad: ${encodeURIComponent(datosCliente.ciudad)}`;
+  return mensaje;
+}
 
+// Registra al cliente en Supabase (tabla `clientes`, solo INSERT permitido por RLS)
+// y, pase lo que pase con el registro, deja que la compra siga por WhatsApp.
+async function registrarClienteYContinuar(datosCliente) {
+  try {
+    const SUPABASE_URL = "https://bhbyjqvkhhbupzqdfeak.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_jvHJ-QQ3uw9Q_8MgUuymJw_3pGwEmA0";
+    const clientePublico = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    await clientePublico.from("clientes").insert({
+      nombre: datosCliente.nombre,
+      telefono: datosCliente.telefono,
+      ciudad: datosCliente.ciudad,
+    });
+  } catch (e) {
+    // Si Supabase falla (sin internet, tabla no creada todavía), igual dejamos
+    // que la clienta complete su compra — nunca bloquear una venta por esto.
+  }
+
+  const mensaje = construirMensajeCompra(datosCliente);
   const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`;
   window.open(url, "_blank");
+}
+
+function abrirModalRegistro() {
+  document.getElementById("overlay-registro").classList.add("visible");
+  document.getElementById("modal-registro").classList.add("abierto");
+  activarTrampaFoco(document.getElementById("modal-registro"));
+  document.getElementById("registro-nombre").focus();
+}
+
+function cerrarModalRegistro() {
+  const modal = document.getElementById("modal-registro");
+  if (!modal.classList.contains("abierto")) return;
+  document.getElementById("overlay-registro").classList.remove("visible");
+  modal.classList.remove("abierto");
+  desactivarTrampaFoco(modal);
 }
 
 // --- Contenido del modal de información (pie de página) ---
@@ -842,6 +883,25 @@ document.getElementById("btn-carrito").addEventListener("click", abrirCarrito);
 document.getElementById("btn-cerrar-carrito").addEventListener("click", cerrarCarrito);
 document.getElementById("overlay-carrito").addEventListener("click", cerrarCarrito);
 document.getElementById("btn-checkout").addEventListener("click", finalizarCompra);
+
+// --- Conectar el modal de registro (nombre/teléfono/ciudad) ---
+document.getElementById("btn-cerrar-registro").addEventListener("click", cerrarModalRegistro);
+document.getElementById("overlay-registro").addEventListener("click", cerrarModalRegistro);
+document.getElementById("form-registro").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById("registro-nombre").value.trim();
+  const telefono = document.getElementById("registro-telefono").value.trim();
+  const ciudad = document.getElementById("registro-ciudad").value.trim();
+
+  if (!nombre || !telefono || !ciudad) {
+    alert("Completa nombre, teléfono y ciudad para continuar.");
+    return;
+  }
+
+  cerrarModalRegistro();
+  registrarClienteYContinuar({ nombre, telefono, ciudad });
+  document.getElementById("form-registro").reset();
+});
 
 // --- Conectar el menú hamburguesa (mobile) ---
 document.getElementById("btn-menu").addEventListener("click", alternarMenu);

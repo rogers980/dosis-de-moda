@@ -33,6 +33,52 @@ create table if not exists admin_pin (
 alter table admin_pin enable row level security;
 -- Sin políticas: ni lectura ni escritura pública. Bloqueada por diseño.
 
+-- Rate limiting del PIN: registro de intentos fallidos por IP.
+-- Sin esto, cualquiera con curl podía probar el PIN sin límite directo
+-- contra el endpoint de Supabase, sin pasar por la UI del sitio.
+create table if not exists intentos_pin (
+  id bigint generated always as identity primary key,
+  ip text not null,
+  intentado_en timestamptz not null default now()
+);
+
+alter table intentos_pin enable row level security;
+-- Sin políticas: nadie la lee/escribe directo, solo las funciones de abajo (security definer).
+
+create index if not exists idx_intentos_pin_ip_fecha on intentos_pin (ip, intentado_en);
+
+-- IP real del que llama, tal como la ve Supabase (cabecera x-forwarded-for
+-- que pone el gateway de Supabase, no la de un proxy que el visitante controle).
+create or replace function ip_actual()
+returns text
+language sql
+stable
+as $$
+  select coalesce(
+    (current_setting('request.headers', true)::json ->> 'x-forwarded-for'),
+    'desconocida'
+  );
+$$;
+
+-- Bloquea si esa IP ya falló 3 veces o más en los últimos 15 minutos.
+create or replace function verificar_limite_intentos(p_ip text)
+returns void
+language plpgsql
+as $$
+declare
+  fallidos integer;
+begin
+  select count(*) into fallidos
+  from intentos_pin
+  where ip = p_ip
+    and intentado_en > now() - interval '15 minutes';
+
+  if fallidos >= 3 then
+    raise exception 'Demasiados intentos fallidos. Esperá 15 minutos e intentá de nuevo.';
+  end if;
+end;
+$$;
+
 -- Función para registrar una venta confirmada por WhatsApp.
 -- Descuenta 1 del stock del producto SOLO si el PIN es correcto.
 create or replace function confirmar_venta(p_id integer, p_pin text)
@@ -44,13 +90,20 @@ as $$
 declare
   pin_ok boolean;
   nuevo_stock integer;
+  v_ip text;
 begin
+  v_ip := ip_actual();
+  perform verificar_limite_intentos(v_ip);
+
   select (pin_hash = crypt(p_pin, pin_hash)) into pin_ok
   from admin_pin where id = 1;
 
   if pin_ok is not true then
+    insert into intentos_pin (ip) values (v_ip);
     raise exception 'PIN incorrecto';
   end if;
+
+  delete from intentos_pin where ip = v_ip;
 
   update stock
     set cantidad = greatest(cantidad - 1, 0),
@@ -76,13 +129,20 @@ as $$
 declare
   pin_ok boolean;
   nuevo_stock integer;
+  v_ip text;
 begin
+  v_ip := ip_actual();
+  perform verificar_limite_intentos(v_ip);
+
   select (pin_hash = crypt(p_pin, pin_hash)) into pin_ok
   from admin_pin where id = 1;
 
   if pin_ok is not true then
+    insert into intentos_pin (ip) values (v_ip);
     raise exception 'PIN incorrecto';
   end if;
+
+  delete from intentos_pin where ip = v_ip;
 
   update stock
     set cantidad = p_cantidad,
