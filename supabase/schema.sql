@@ -82,6 +82,23 @@ as $$
   );
 $$;
 
+-- Rate-limit de la tabla `clientes`: máximo 5 registros por IP cada hora.
+-- Sin esto, cualquiera podía llenar la tabla de filas basura con un script,
+-- sin ninguna fricción (el INSERT público no tenía límite de ningún tipo).
+alter table clientes add column if not exists ip text default ip_actual();
+
+drop policy if exists "cualquiera puede registrarse como cliente" on clientes;
+
+create policy "registro de cliente con limite de spam"
+  on clientes for insert
+  with check (
+    (
+      select count(*) from clientes c
+      where c.ip = ip_actual()
+        and c.creado_en > now() - interval '1 hour'
+    ) < 5
+  );
+
 -- Bloquea si esa IP ya falló 3 veces o más en los últimos 15 minutos.
 create or replace function verificar_limite_intentos(p_ip text)
 returns void
